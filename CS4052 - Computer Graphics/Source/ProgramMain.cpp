@@ -5,6 +5,8 @@ NEIL HYLAND (11511677)
 Program entry point ('main' function).
 */
 #include "Window.hpp"
+#include "OpenGL.hpp"
+
 #include <iostream>
 
 
@@ -20,8 +22,7 @@ Program entry point ('main' function).
 #endif
 {
 	std::cout << "Entering main function...\n";
-	
-	//Window::initGLFW();
+	if (!initGLFW()) return EXIT_FAILURE;
 
 	//// Startup:
 	//Window game_window* = new Window();
@@ -53,8 +54,7 @@ Program entry point ('main' function).
 	//
 	//// TODO
 
-	//Window::deInitGLFW();
-	
+	deInitGLFW();
 	std::cout << "Exiting main function...\n";
 
 	#if defined(_DEBUG) || !defined(NDEBUG)

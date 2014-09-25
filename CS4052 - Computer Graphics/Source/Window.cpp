@@ -5,7 +5,7 @@ NEIL HYLAND (11511677)
 Window class (wrapper for GLFW and GLEW setup).
 */
 #include "Window.hpp"
-//#include "OpenGL.hpp"
+#include "OpenGL.hpp"
 
 #include <iostream>
 
@@ -20,7 +20,7 @@ Window::Window() :
 	m_title				("?")
 {
 	// Default initialisation...
-	std::cout << "Empty window object created, need to call the window creation function.\n";
+	this->create();
 }
 
 
@@ -58,5 +58,5 @@ bool Window::create(std::size_t p_width,
 bool Window::destroy()
 {
 	// TODO
-	return true;
+	return (m_was_destroyed = true);
 }

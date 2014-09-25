@@ -3,6 +3,9 @@ CS4051 - Computer Graphics
 NEIL HYLAND (11511677)
 
 Window class (wrapper for GLFW and GLEW setup).
+
+Multiple windows can share the same OpenGL context by passing a pointer
+from an existing window to a new window at creation.
 */
 #pragma once
 #include <string>
@@ -27,7 +30,7 @@ public:
 	// Destructor:
 	~Window();
 
-	// (Re)creation function:
+	// Creation function:
 	bool create(std::size_t p_width = 1024,
 				std::size_t p_height = 768,
 				const std::string& p_title = "CS4051 - Computer Graphics (NEIL HYLAND - 11511677)",
@@ -64,12 +67,6 @@ public:
 
 	// Window event polling function:
 	void dispatchEvents();
-
-	// GLFW global initialisation function:
-	static bool initGLFW();
-
-	// GLFW global de-initialisation function:
-	static void deInitGLFW();
 private:
 	GLFWwindow* m_glfw_handle;
 	GLEWContextStruct* m_glew_handle;
@@ -81,6 +78,6 @@ private:
 
 	// Window info:
 	std::size_t m_width,
-		m_height;
+			    m_height;
 	std::string m_title;
 };
