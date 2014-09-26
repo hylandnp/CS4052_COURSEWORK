@@ -3,16 +3,12 @@ CS4051 - Computer Graphics
 NEIL HYLAND (11511677)
 
 Window class (wrapper for GLFW and GLEW setup).
-
-Multiple windows can share the same OpenGL context by passing a pointer
-from an existing window to a new window at creation.
 */
 #pragma once
 #include <string>
 
 // Forward declaration(s):
 struct GLFWwindow;
-struct GLEWContextStruct;
 
 
 class Window
@@ -24,8 +20,7 @@ public:
 	// Constructor:
 	Window(std::size_t p_width,
 		   std::size_t p_height,
-		   const std::string& p_title,
-		   Window* p_shared);
+		   const std::string& p_title);
 
 	// Destructor:
 	~Window();
@@ -33,11 +28,10 @@ public:
 	// Creation function:
 	bool create(std::size_t p_width = 1024,
 				std::size_t p_height = 768,
-				const std::string& p_title = "CS4051 - Computer Graphics (NEIL HYLAND - 11511677)",
-				Window* p_shared = nullptr);
+				const std::string& p_title = "CS4051 - Computer Graphics (NEIL HYLAND - 11511677)");
 
 	// Manual destruction function:
-	bool destroy();
+	void destroy();
 
 	// Visibility functions:
 	void setVisible(bool p_visible = true);
@@ -48,7 +42,7 @@ public:
 	bool isVsyncEnabled();
 
 	// Window set active context function:
-	bool asActiveContext();
+	void asActiveContext();
 
 	// Window is running check function:
 	bool isOpen();
@@ -63,13 +57,12 @@ public:
 			   bool p_accum_buffer = true);
 
 	// Window swap buffers function:
-	bool display();
+	void display();
 
 	// Window event polling function:
 	void dispatchEvents();
 private:
 	GLFWwindow* m_glfw_handle;
-	GLEWContextStruct* m_glew_handle;
 
 	// Window flags:
 	bool m_was_destroyed,

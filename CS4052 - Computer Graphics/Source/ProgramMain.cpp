@@ -24,35 +24,35 @@ Program entry point ('main' function).
 	std::cout << "Entering main function...\n";
 	if (!initGLFW()) return EXIT_FAILURE;
 
-	//// Startup:
-	//Window game_window* = new Window();
-	//if (!game_window->create()) return EXIT_FAILURE;
-	//
-	//// TODO
+	// Startup:
+	Window* game_window = new Window();
+	if (!game_window->create()) return EXIT_FAILURE;
+	
+	// TODO
 
-	//// Runtime:
-	//game_window->setVisible();
-	//
-	//while (game_window->isOpen())
-	//{
-	//	// Clear the window:
-	//	if (!game_window->clear()) return EXIT_FAILURE;
+	// Runtime:
+	game_window->setVisible();
+	
+	while (game_window->isOpen())
+	{
+		// Clear the window:
+		if (!game_window->clear()) return EXIT_FAILURE;
 
-	//	// Render the game scene:
-	//	// TODO
+		// Render the game scene:
+		// TODO
 
-	//	// Swap the window buffers:
-	//	game_window->display();
-	//	
-	//	// Handle window events:
-	//	game_window->dispatchEvents();
-	//}
-	//
-	//// Shutdown:
-	//game_window->destroy();
-	//delete game_window;
-	//
-	//// TODO
+		// Swap the window buffers:
+		game_window->display();
+		
+		// Handle window events:
+		game_window->dispatchEvents();
+	}
+	
+	// Shutdown:
+	game_window->destroy();
+	delete game_window;
+	
+	// TODO
 
 	deInitGLFW();
 	std::cout << "Exiting main function...\n";

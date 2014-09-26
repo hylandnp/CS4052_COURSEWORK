@@ -20,14 +20,13 @@ Window::Window() :
 	m_title				("?")
 {
 	// Default initialisation...
-	this->create();
+	//this->create();
 }
 
 
 Window::Window(std::size_t p_width,
 			   std::size_t p_height,
-			   const std::string& p_title,
-			   Window* p_shared) :
+			   const std::string& p_title) :
 	m_glfw_handle		(nullptr),
 	m_was_destroyed		(false),
 	m_vsync				(false),
@@ -47,16 +46,198 @@ Window::~Window()
 
 bool Window::create(std::size_t p_width,
 					std::size_t p_height,
-					const std::string& p_title,
-					Window* p_shared)
+					const std::string& p_title)
 {
+	// Store new window info:
+	m_width = p_width;
+	m_height = p_height;
+	m_title = p_title;
+
+	std::cout << "Creating new GLFW-based window...\n";
+
+	// Setup window creation hints:
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+	// TODO - other possible hints
+
+	// Create or reset the GLFW window:
+	if (m_glfw_handle) glfwDestroyWindow(m_glfw_handle);
+
+	if (!(m_glfw_handle = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL)))
+	{
+		std::cerr << "\nERROR: Failed to create the GLFW-based OpenGL render window!\n\n";
+		return false;
+	}
+
+	// Set window position in the centre of the screen:
+	auto monitor_video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	glfwSetWindowPos(m_glfw_handle,
+					 static_cast<int>(ceilf((monitor_video_mode->width - m_width) / 2.f)),
+					 static_cast<int>(ceilf((monitor_video_mode->height - m_height) / 2.f)));
+
+	// Setup GLEW:
+	glfwMakeContextCurrent(m_glfw_handle);
+	GLenum err = glewInit();
+
+	if (err != GLEW_OK)
+	{
+		std::cerr << "ERROR: Failed to initialise the GLEW library for the current window!\n\tMessage: '" << glewGetErrorString(err) << "'.\n\n";
+
+		glfwDestroyWindow(m_glfw_handle);
+		return false;
+	}
+
+	// Output window information:
+	std::cout << "Created " << m_width << "x" << m_height << " window '" << m_title.c_str() << "' successfully! ";
+	std::cout << "Using GLFW version: '" << glfwGetVersionString() << "' and GLEW version: '" << glewGetString(GLEW_VERSION) << "'. ";
+	std::cout << "With OpenGL version: '" << glGetString(GL_VERSION) << "' and renderer: '" << glGetString(GL_RENDERER) << "'.\n";
+
+	// Setup window state/input callbacks:
 	// TODO
-	return true;
+
+	// Configure OpenGL:
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearDepth(1.0);
+	glClearStencil(0);
+	glClearAccum(0.f, 0.f, 0.f, 0.f);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	// Initially-disabled features:
+	glDisable(GL_LIGHTING);
+
+	// Setup OpenGL viewport:
+	int fb_width = 0,
+		fb_height = 0;
+
+	glfwGetFramebufferSize(m_glfw_handle, &fb_width, &fb_height);
+	glViewport(0, 0, fb_width, fb_height);
+
+	// If no OpenGL errors reported, return successfully:
+	return glCheck(__FILE__, __LINE__);
 }
 
 
-bool Window::destroy()
+void Window::destroy()
 {
-	// TODO
-	return (m_was_destroyed = true);
+	if (m_glfw_handle)
+	{
+		// Any final OpenGL steps:
+		// TODO
+
+		glfwDestroyWindow(m_glfw_handle);
+	}
+
+	m_was_destroyed = true;
+}
+
+
+void Window::setVisible(bool p_visible)
+{
+	if (m_glfw_handle)
+	{
+		m_visible = p_visible;
+
+		// Apply window visibility:
+		if (m_visible)
+		{
+			glfwShowWindow(m_glfw_handle);
+		}
+		else
+		{
+			glfwHideWindow(m_glfw_handle);
+		}
+	}
+}
+
+
+bool Window::isVisible()
+{
+	return ((m_glfw_handle) ? m_visible : false);
+}
+
+
+void Window::setVsyncEnabled(bool p_vsync)
+{
+	if (m_glfw_handle)
+	{
+		m_vsync = p_vsync;
+
+		// Apply vertical sync:
+		glfwMakeContextCurrent(m_glfw_handle);
+		glfwSwapInterval(((m_vsync) ? 1 : 0));
+	}
+}
+
+
+bool Window::isVsyncEnabled()
+{
+	return ((m_glfw_handle) ? m_vsync : false);
+}
+
+
+void Window::asActiveContext()
+{
+	if (m_glfw_handle) glfwMakeContextCurrent(m_glfw_handle);
+}
+
+
+bool Window::isOpen()
+{
+	return ((m_glfw_handle) ? (glfwWindowShouldClose(m_glfw_handle) == GL_FALSE) : false);
+}
+
+
+void Window::close()
+{
+	if (m_glfw_handle) glfwSetWindowShouldClose(m_glfw_handle, GL_TRUE);
+}
+
+
+bool Window::clear(bool p_colour_buffer,
+				   bool p_depth_buffer,
+				   bool p_stencil_buffer,
+				   bool p_accum_buffer)
+{
+	if (m_glfw_handle)
+	{
+		glfwMakeContextCurrent(m_glfw_handle);
+	}
+	else
+	{
+		std::cerr << "ERROR: Cannot clear OpenGL buffers, no active window/context!\n";
+		return false;
+	}
+
+	// Setup clear mask:
+	GLbitfield clear_mask = 0;
+
+	if (p_colour_buffer) clear_mask |= GL_COLOR_BUFFER_BIT;
+	if (p_depth_buffer) clear_mask |= GL_DEPTH_BUFFER_BIT;
+	if (p_stencil_buffer) clear_mask |= GL_STENCIL_BUFFER_BIT;
+	if (p_accum_buffer) clear_mask |= GL_ACCUM_BUFFER_BIT;
+
+	// Clear the window buffers:
+	glClear(clear_mask);
+
+	// If no OpenGL errors reported, return successfully:
+	return true;
+	return glCheck(__FILE__, __LINE__);
+}
+
+
+void Window::display()
+{
+	if (m_glfw_handle)
+	{
+		glfwMakeContextCurrent(m_glfw_handle);
+		glfwSwapBuffers(m_glfw_handle);
+	}
+}
+
+
+void Window::dispatchEvents()
+{
+	if (m_glfw_handle) glfwPollEvents();
 }
