@@ -152,7 +152,7 @@ bool checkShaderComponent(GLenum p_shader_handle,
 		std::vector<char> msg_buffer(max_buffer);
 		glGetShaderInfoLog(p_shader_handle, max_buffer, &max_buffer, &msg_buffer[0]);
 
-		std::cerr << "\nERROR: Invalid shader component detected!\n\tMessage: '" << &msg_buffer[0] << "'\n\tIn file: '" << p_file_name << "'\n\tAt line: " << p_line_no << ".\n\n";
+		std::cerr << "\nERROR: Invalid shader component detected!\n\tMessage:\n" << &msg_buffer[0] << "\tIn file: '" << p_file_name << "'\n\tAt line: " << p_line_no << ".\n\n";
 		msg_buffer.clear();
 
 		// Flag the shader for deletion and return after checking general OpenGL error flags:
@@ -185,7 +185,7 @@ bool checkShaderProgram(GLenum p_program_handle,
 		std::vector<char> msg_buffer(max_buffer);
 		glGetProgramInfoLog(p_program_handle, max_buffer, &max_buffer, &msg_buffer[0]);
 
-		std::cerr << "\nERROR: Invalid shader program detected!\n\tMessage: '" << &msg_buffer[0] << "'\n\tIn file: '" << p_file_name << "'\n\tAt line: " << p_line_no << ".\n\n";
+		std::cerr << "\nERROR: Invalid shader program detected!\n\tMessage:\n" << &msg_buffer[0] << "\n\tIn file: '" << p_file_name << "'\n\tAt line: " << p_line_no << ".\n\n";
 		msg_buffer.clear();
 
 		// Flag the program for deletion and return after checking general OpenGL error flags:
