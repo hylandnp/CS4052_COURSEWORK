@@ -4,8 +4,9 @@ NEIL HYLAND (11511677)
 
 Program entry point ('main' function).
 */
-#include "Window.hpp"
 #include "OpenGL.hpp"
+#include "Log.hpp"
+#include "Window.hpp"
 
 #include <iostream>
 
@@ -21,17 +22,63 @@ Program entry point ('main' function).
 	int main(int p_argc, char** p_argv)
 #endif
 {
-	std::cout << "Entering main function...\n";
-	if (!initGLFW()) return EXIT_FAILURE;
+	#if defined(_DEBUG) || !defined(NDEBUG)
+		std::cout << "Entering main function...\n";
+	#endif // _DEBUG || !NDEBUG
 
 	// Startup:
+	Log::getInstance().openFile("cs4051.log");
+
+	if (!initGLFW()) return EXIT_FAILURE;
+
 	Window* game_window = new Window();
 	if (!game_window->create()) return EXIT_FAILURE;
-	
-	// TODO
+
+
+	// LAB 0 stuff:
+	//GLfloat triangle_points[] =
+	//{
+	//	0.0f, 0.5f, 0.0f,
+	//	0.5f, -0.5f, 0.0f,
+	//	-0.5f, -0.5f, 0.0f
+	//};
+
+	//GLfloat square_points[] =
+	//{
+	//	0.0f, 0.5f, 0.0f,
+	//	0.5f, -0.5f, 0.0f,
+	//	-0.5f, -0.5f, 0.0f
+	//};
+
+	//GLuint triangle_vbo = 0,
+	//	   square_vbo = 0,
+	//	   triangle_vao = 0,
+	//	   square_vao = 0;
+
+	//glGenBuffers(1, &triangle_vbo);
+	////glGenBuffers(1, &square_vbo);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, triangle_vbo);
+	//glBufferData(GL_ARRAY_BUFFER,
+	//			 sizeof(triangle_points),
+	//			 triangle_points,
+	//			 GL_STATIC_DRAW);
+
+	//glGenVertexArrays(1, &triangle_vao);
+	//glBindVertexArray(triangle_vao);
+	//glEnableVertexAttribArray(0);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, triangle_vbo);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	//Shader* simple_shader = new Shader("Assets/SimpleShader.vert.glsl",
+	//								   "Assets/SimpleShader.frag.glsl");
+
+
 
 	// Runtime:
 	game_window->setVisible();
+	Log::getInstance().writeMessage("Entering main render loop...\n");
 	
 	while (game_window->isOpen())
 	{
@@ -41,27 +88,35 @@ Program entry point ('main' function).
 		// Render the game scene:
 		// TODO
 
+
+		// LAB 0 stuff:
+
+
+
 		// Swap the window buffers:
 		game_window->display();
 		
 		// Handle window events:
 		game_window->dispatchEvents();
 	}
+	Log::getInstance().writeMessage("Exiting main render loop...\n");
 	
+
+	// LAB 0 stuff:
+	//delete simple_shader;
+
 	// Shutdown:
 	game_window->destroy();
 	delete game_window;
-	
-	// TODO
 
 	deInitGLFW();
-	std::cout << "Exiting main function...\n";
 
 	#if defined(_DEBUG) || !defined(NDEBUG)
-		std::cout << "\nPress enter to exit program.\n";
+		std::cout << "Exiting main function...\nPress enter to exit program.\n";
 		std::getchar(); // wait for any character entry before exiting completely
 	#endif // _DEBUG || !NDEBUG
 
+	Log::getInstance().closeFile();
 	return EXIT_SUCCESS;
 }
 

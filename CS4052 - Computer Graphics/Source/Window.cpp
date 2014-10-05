@@ -6,18 +6,17 @@ Window class (wrapper for GLFW and GLEW setup).
 */
 #include "Window.hpp"
 #include "OpenGL.hpp"
-
-#include <iostream>
+#include "Log.hpp"
 
 
 Window::Window() :
-	m_glfw_handle		(nullptr),
-	m_was_destroyed		(false),
-	m_vsync				(false),
-	m_visible			(false),
-	m_width				(0),
-	m_height			(0),
-	m_title				("?")
+	m_glfw_handle(nullptr),
+	m_was_destroyed(false),
+	m_vsync(false),
+	m_visible(false),
+	m_width(0),
+	m_height(0),
+	m_title("?")
 {
 	// Default initialisation...
 	//this->create();
@@ -27,10 +26,10 @@ Window::Window() :
 Window::Window(std::size_t p_width,
 			   std::size_t p_height,
 			   const std::string& p_title) :
-	m_glfw_handle		(nullptr),
-	m_was_destroyed		(false),
-	m_vsync				(false),
-	m_visible			(false)
+	m_glfw_handle(nullptr),
+	m_was_destroyed(false),
+	m_vsync(false),
+	m_visible(false)
 {
 	// Initialisation...
 	this->create(p_width, p_height, p_title);
@@ -53,7 +52,7 @@ bool Window::create(std::size_t p_width,
 	m_height = p_height;
 	m_title = p_title;
 
-	std::cout << "Creating new GLFW-based window...\n";
+	Log::getInstance().writeMessage("Creating new GLFW-based window...\n");
 
 	// Setup window creation hints:
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
@@ -64,7 +63,9 @@ bool Window::create(std::size_t p_width,
 
 	if (!(m_glfw_handle = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL)))
 	{
-		std::cerr << "\nERROR: Failed to create the GLFW-based OpenGL render window!\n\n";
+		Log::getInstance().writeError("Window.cpp",
+									  __LINE__,
+									  "\tFailed to create the GLFW-based OpenGL render window!\n\n");
 		return false;
 	}
 
@@ -80,16 +81,28 @@ bool Window::create(std::size_t p_width,
 
 	if (err != GLEW_OK)
 	{
-		std::cerr << "ERROR: Failed to initialise the GLEW library for the current window!\n\tMessage: '" << glewGetErrorString(err) << "'.\n\n";
+		Log::getInstance().writeError("Window.cpp",
+									  __LINE__,
+									  "\tFailed to initialise the GLEW library for the current window!\n\tMessage: '%s'.\n\n",
+									  glewGetErrorString(err));
 
 		glfwDestroyWindow(m_glfw_handle);
 		return false;
 	}
 
 	// Output window information:
-	std::cout << "Created " << m_width << "x" << m_height << " window '" << m_title.c_str() << "' successfully! ";
-	std::cout << "Using GLFW version: '" << glfwGetVersionString() << "' and GLEW version: '" << glewGetString(GLEW_VERSION) << "'. ";
-	std::cout << "With OpenGL version: '" << glGetString(GL_VERSION) << "' and renderer: '" << glGetString(GL_RENDERER) << "'.\n";
+	Log::getInstance().writeMessage("Created %ux%u window: '%s' successfully!\n",
+									m_width,
+									m_height,
+									m_title.c_str());
+
+	Log::getInstance().writeMessage("Using GLFW version: '%s' and GLEW version: '%s'.\n",
+									glfwGetVersionString(),
+									glewGetString(GLEW_VERSION));
+	
+	Log::getInstance().writeMessage("With OpenGL version: '%s' and renderer: '%s'.\n",
+									glGetString(GL_VERSION),
+									glGetString(GL_RENDERER));
 
 	// Setup window state/input callbacks:
 	// TODO
@@ -115,7 +128,7 @@ bool Window::create(std::size_t p_width,
 	glViewport(0, 0, fb_width, fb_height);
 
 	// If no OpenGL errors reported, return successfully:
-	return glCheck(__FILE__, __LINE__);
+	return !hasOpenGLErrors("Window.cpp", __LINE__);
 }
 
 
@@ -206,7 +219,9 @@ bool Window::clear(bool p_colour_buffer,
 	}
 	else
 	{
-		std::cerr << "ERROR: Cannot clear OpenGL buffers, no active window/context!\n";
+		Log::getInstance().writeError("Window.cpp",
+									  __LINE__,
+									  "\tCannot clear OpenGL buffers, no active window/context!\n\n");
 		return false;
 	}
 
@@ -222,8 +237,7 @@ bool Window::clear(bool p_colour_buffer,
 	glClear(clear_mask);
 
 	// If no OpenGL errors reported, return successfully:
-	return true;
-	return glCheck(__FILE__, __LINE__);
+	return !hasOpenGLErrors("Window.cpp", __LINE__);
 }
 
 
