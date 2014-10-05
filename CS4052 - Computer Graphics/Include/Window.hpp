@@ -13,64 +13,64 @@ struct GLFWwindow;
 
 class Window
 {
-public:
-	// Default constructor:
-	Window();
+	public:
+		// Default constructor:
+		Window();
 
-	// Constructor:
-	Window(std::size_t p_width,
-		   std::size_t p_height,
-		   const std::string& p_title);
+		// Constructor:
+		Window(std::size_t p_width,
+			   std::size_t p_height,
+			   const std::string& p_title);
 
-	// Destructor:
-	~Window();
+		// Destructor:
+		~Window();
 
-	// Creation function:
-	bool create(std::size_t p_width = 800,
-				std::size_t p_height = 600,
-				const std::string& p_title = "CS4051 - Computer Graphics (NEIL HYLAND - 11511677)");
+		// Creation function:
+		bool create(std::size_t p_width = 800,
+					std::size_t p_height = 600,
+					const std::string& p_title = "CS4051 - Computer Graphics (NEIL HYLAND - 11511677)");
 
-	// Manual destruction function:
-	void destroy();
+		// Manual destruction function:
+		void destroy();
 
-	// Visibility functions:
-	void setVisible(bool p_visible = true);
-	bool isVisible();
+		// Visibility functions:
+		void setVisible(bool p_visible = true);
+		bool isVisible();
 
-	// Vertical synchronisation functions:
-	void setVsyncEnabled(bool p_vsync = true);
-	bool isVsyncEnabled();
+		// Vertical synchronisation functions:
+		void setVsyncEnabled(bool p_vsync = true);
+		bool isVsyncEnabled();
 
-	// Window set active context function:
-	void asActiveContext();
+		// Window set active context function:
+		void asActiveContext();
 
-	// Window is running check function:
-	bool isOpen();
+		// Window is running check function:
+		bool isOpen();
 
-	// Window close flag set function:
-	void close();
+		// Window close flag set function:
+		void close();
 
-	// Window clear buffer function:
-	bool clear(bool p_colour_buffer = true,
-			   bool p_depth_buffer = true,
-			   bool p_stencil_buffer = true,
-			   bool p_accum_buffer = true);
+		// Window clear buffer function:
+		bool clear(bool p_colour_buffer = true,
+				   bool p_depth_buffer = true,
+				   bool p_stencil_buffer = true,
+				   bool p_accum_buffer = true);
 
-	// Window swap buffers function:
-	void display();
+		// Window swap buffers function:
+		void display();
 
-	// Window event polling function:
-	void dispatchEvents();
-private:
-	GLFWwindow* m_glfw_handle;
+		// Window event polling function:
+		void dispatchEvents();
+	private:
+		GLFWwindow* m_glfw_handle;
 
-	// Window flags:
-	bool m_was_destroyed,
-		 m_vsync,
-		 m_visible;
+		// Window flags:
+		bool m_was_destroyed,
+			 m_vsync,
+			 m_visible;
 
-	// Window info:
-	std::size_t m_width,
-			    m_height;
-	std::string m_title;
+		// Window info:
+		std::size_t m_width,
+					m_height;
+		std::string m_title;
 };
