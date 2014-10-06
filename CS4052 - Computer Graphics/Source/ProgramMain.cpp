@@ -45,16 +45,22 @@ Program entry point ('main' function).
 	// LAB 0 stuff:
 	GLfloat triangle_points[] =
 	{
-		-0.8f, 0.8f, 0.f,
-		-0.2f, 0.8f, 0.f,
-		-0.5f, 0.f, 0.f
+		0.5f, 0.5f, 0.f, // triangle 1
+		0.5f, -0.5f, 0.f,
+		-0.5f, -0.5f, 0.f,
+		-0.5f, -0.5f, 0.f, // triange 2
+		-0.5f, 0.5f, 0.f,
+		0.5f, 0.5f, 0.f
 	};
 
 	GLfloat triangle_colours[] =
 	{
 		1.f, 0.f, 0.f,
-		0.f, 1.f, 0.f,
-		0.f, 0.f, 1.f
+		0.7f, 1.f, 0.f,
+		1.f, 0.f, 0.f,
+		1.f, 0.f, 0.f,
+		0.7f, 1.f, 0.f,
+		1.f, 0.f, 0.f
 	};
 
 	GLuint triangle_vbo = 0,
@@ -75,6 +81,8 @@ Program entry point ('main' function).
 				 sizeof(triangle_colours),
 				 triangle_colours,
 				 GL_STATIC_DRAW);
+
+	// Create VAO:
 	glGenVertexArrays(1, &triangle_vao);
 
 	// Vertex attributes:
@@ -93,7 +101,7 @@ Program entry point ('main' function).
 	Shader* simple_shader = new Shader();
 
 	if (!simple_shader->loadFromFile("Assets/SimpleShader.vert.glsl",
-		"Assets/SimpleShader.frag.glsl"))
+									 "Assets/SimpleShader.frag.glsl"))
 	{
 		return EXIT_FAILURE;
 	}
@@ -115,7 +123,7 @@ Program entry point ('main' function).
 		// LAB 0 stuff:
 		simple_shader->asActiveShader();
 		glBindVertexArray(triangle_vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
 		// Swap the window buffers:

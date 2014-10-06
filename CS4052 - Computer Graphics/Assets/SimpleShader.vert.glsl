@@ -2,7 +2,7 @@
 CS4051 - Computer Graphics
 NEIL HYLAND (11511677)
 
-Simple GLSL fragment shader.
+Simple GLSL vertex shader.
 */
 #version 400
 

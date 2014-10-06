@@ -57,7 +57,7 @@ bool Window::create(std::size_t p_width,
 	// Setup window creation hints:
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	// TODO - other possible hints
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create or reset the GLFW window:
 	if (m_glfw_handle) glfwDestroyWindow(m_glfw_handle);
@@ -118,6 +118,10 @@ bool Window::create(std::size_t p_width,
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
 
 	// Initially-disabled features:
 	glDisable(GL_LIGHTING);
