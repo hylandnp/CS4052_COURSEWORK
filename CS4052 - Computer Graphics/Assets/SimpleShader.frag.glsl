@@ -6,9 +6,10 @@ Simple GLSL fragment shader.
 */
 #version 400
 
+in vec3 colour_from_vertex;
 out vec4 frag_colour;
 
 void main()
 {
-	frag_colour = vec4(0.5, 0.0, 0.5, 1.0);
+	frag_colour = vec4(colour_from_vertex, 1.0);
 }

@@ -33,7 +33,7 @@ Program entry point ('main' function).
 	if (!initGLFW()) return EXIT_FAILURE;
 	Window* game_window = new Window();
 
-	if (!game_window->create())
+	if (!game_window->create(600, 600))
 	{
 		delete game_window;
 		return EXIT_FAILURE;
@@ -45,23 +45,24 @@ Program entry point ('main' function).
 	// LAB 0 stuff:
 	GLfloat triangle_points[] =
 	{
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f
+		-0.8f, 0.8f, 0.f,
+		-0.2f, 0.8f, 0.f,
+		-0.5f, 0.f, 0.f
 	};
 
-	GLfloat square_points[] =
+	GLfloat triangle_colours[] =
 	{
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f
+		1.f, 0.f, 0.f,
+		0.f, 1.f, 0.f,
+		0.f, 0.f, 1.f
 	};
 
 	GLuint triangle_vbo = 0,
-		   triangle_vao = 0;
+		   triangle_vao = 0,
+		   colour_vbo = 0;
 
 	glGenBuffers(1, &triangle_vbo);
-	//glGenBuffers(1, &square_vbo);
+	glGenBuffers(1, &colour_vbo);
 
 	glBindBuffer(GL_ARRAY_BUFFER, triangle_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
@@ -69,13 +70,26 @@ Program entry point ('main' function).
 				 triangle_points,
 				 GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ARRAY_BUFFER, colour_vbo);
+	glBufferData(GL_ARRAY_BUFFER,
+				 sizeof(triangle_colours),
+				 triangle_colours,
+				 GL_STATIC_DRAW);
 	glGenVertexArrays(1, &triangle_vao);
+
+	// Vertex attributes:
 	glBindVertexArray(triangle_vao);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, triangle_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
+	// Colour attributes:
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, colour_vbo);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	// Shader:
 	Shader* simple_shader = new Shader();
 
 	if (!simple_shader->loadFromFile("Assets/SimpleShader.vert.glsl",
