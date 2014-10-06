@@ -99,11 +99,13 @@
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\ProgramMain.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Log.hpp" />
     <ClInclude Include="Include\OpenGL.hpp" />
+    <ClInclude Include="Include\Shader.hpp" />
     <ClInclude Include="Include\Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

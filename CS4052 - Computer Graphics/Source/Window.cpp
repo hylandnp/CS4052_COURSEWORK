@@ -56,6 +56,7 @@ bool Window::create(std::size_t p_width,
 
 	// Setup window creation hints:
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	// TODO - other possible hints
 
 	// Create or reset the GLFW window:
@@ -77,6 +78,7 @@ bool Window::create(std::size_t p_width,
 
 	// Setup GLEW:
 	glfwMakeContextCurrent(m_glfw_handle);
+	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 
 	if (err != GLEW_OK)

@@ -189,7 +189,7 @@ bool isValidShaderProgram(GLuint p_program_handle,
 						  const char* p_file_name,
 						  std::size_t p_line_no)
 {
-	if (glIsShader(p_program_handle) == GL_FALSE)
+	if (glIsProgram(p_program_handle) == GL_FALSE)
 	{
 		Log::getInstance().writeError(p_file_name,
 									  p_line_no,
@@ -199,16 +199,16 @@ bool isValidShaderProgram(GLuint p_program_handle,
 	}
 
 	GLint is_ok = 0;
-	glGetShaderiv(p_program_handle, GL_COMPILE_STATUS, &is_ok);
+	glGetProgramiv(p_program_handle, GL_LINK_STATUS, &is_ok);
 
 	if (is_ok == GL_FALSE)
 	{
 		GLint max_buffer = 0;
-		glGetShaderiv(p_program_handle, GL_INFO_LOG_LENGTH, &max_buffer);
+		glGetProgramiv(p_program_handle, GL_INFO_LOG_LENGTH, &max_buffer);
 
 		// Format program log message:
 		std::vector<char> msg_buffer(max_buffer);
-		glGetShaderInfoLog(p_program_handle, max_buffer, &max_buffer, &msg_buffer[0]);
+		glGetProgramInfoLog(p_program_handle, max_buffer, &max_buffer, &msg_buffer[0]);
 
 		Log::getInstance().writeError(p_file_name,
 									  p_line_no,
