@@ -1,5 +1,5 @@
 /*
-CS4051 - Computer Graphics
+CS4052 - Computer Graphics
 NEIL HYLAND (11511677)
 
 Simple GLSL vertex shader.
@@ -14,5 +14,5 @@ out vec3 colour_from_vertex;
 void main()
 {
 	colour_from_vertex = vertex_colour;
-	gl_Position = vec4(vertex_point, 1.0);
+	gl_Position = vec4(vertex_point * vec3(0.5), 1.0);
 }

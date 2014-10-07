@@ -1,5 +1,5 @@
 /*
-CS4051 - Computer Graphics
+CS4052 - Computer Graphics
 NEIL HYLAND (11511677)
 
 Window class (wrapper for GLFW and GLEW setup).

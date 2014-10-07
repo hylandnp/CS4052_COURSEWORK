@@ -1,5 +1,5 @@
 /*
-CS4051 - Computer Graphics
+CS4052 - Computer Graphics
 NEIL HYLAND (11511677)
 
 Program entry point ('main' function).
@@ -45,12 +45,12 @@ Program entry point ('main' function).
 	// LAB 0 stuff:
 	GLfloat triangle_points[] =
 	{
-		0.5f, 0.5f, 0.f, // triangle 1
-		0.5f, -0.5f, 0.f,
-		-0.5f, -0.5f, 0.f,
-		-0.5f, -0.5f, 0.f, // triange 2
-		-0.5f, 0.5f, 0.f,
-		0.5f, 0.5f, 0.f
+		0.8f, 0.8f, 0.f, // triangle 1
+		0.8f, -0.8f, 0.f,
+		-0.8f, -0.8f, 0.f,
+		-0.8f, -0.8f, 0.f, // triange 2
+		-0.8f, 0.8f, 0.f,
+		0.8f, 0.8f, 0.f
 	};
 
 	GLfloat triangle_colours[] =
