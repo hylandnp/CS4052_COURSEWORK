@@ -12,6 +12,10 @@ General OpenGL-related headers and utility functions.
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+// OpenGL maths headers:
+#define GLM_SWIZZLE
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 // GLFW startup/shutdown:
 bool initGLFW();

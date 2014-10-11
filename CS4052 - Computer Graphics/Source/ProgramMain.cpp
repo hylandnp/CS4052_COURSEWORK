@@ -42,6 +42,7 @@ Program entry point ('main' function).
 	game_window->asActiveContext();
 
 
+
 	// LAB 0 stuff:
 	GLfloat triangle_points[] =
 	{
@@ -105,6 +106,9 @@ Program entry point ('main' function).
 	{
 		return EXIT_FAILURE;
 	}
+
+	// LAB 1 stuff:
+	
 
 
 
