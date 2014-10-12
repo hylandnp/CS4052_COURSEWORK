@@ -97,6 +97,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\ProgramMain.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Input.hpp" />
     <ClInclude Include="Include\Log.hpp" />
     <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\Shader.hpp" />

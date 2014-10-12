@@ -61,6 +61,9 @@ class Window
 
 		// Window event polling function:
 		void dispatchEvents();
+
+		// Window handle access:
+		GLFWwindow* getRawWindowHandle();
 	private:
 		GLFWwindow* m_glfw_handle;
 

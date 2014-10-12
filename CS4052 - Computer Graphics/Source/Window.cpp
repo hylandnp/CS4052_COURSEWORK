@@ -7,6 +7,7 @@ Window class (wrapper for GLFW and GLEW setup).
 #include "Window.hpp"
 #include "OpenGL.hpp"
 #include "Log.hpp"
+#include "Input.hpp"
 
 
 Window::Window() :
@@ -107,7 +108,7 @@ bool Window::create(std::size_t p_width,
 									glGetString(GL_RENDERER));
 
 	// Setup window state/input callbacks:
-	// TODO
+	glfwSetKeyCallback(m_glfw_handle, &keyEvent);
 
 	// Configure OpenGL:
 	glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -260,4 +261,10 @@ void Window::display()
 void Window::dispatchEvents()
 {
 	if (m_glfw_handle) glfwPollEvents();
+}
+
+
+GLFWwindow* Window::getRawWindowHandle()
+{
+	return m_glfw_handle;
 }

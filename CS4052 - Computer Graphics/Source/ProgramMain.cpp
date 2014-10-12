@@ -8,6 +8,7 @@ Program entry point ('main' function).
 #include "Log.hpp"
 #include "Window.hpp"
 #include "Shader.hpp"
+#include "Input.hpp"
 
 #include <iostream>
 
@@ -29,6 +30,7 @@ Program entry point ('main' function).
 
 	// Startup:
 	Log::getInstance().openFile("cs4051.log");
+	Input::getInstance().clearInputs();
 
 	if (!initGLFW()) return EXIT_FAILURE;
 	Window* game_window = new Window();
@@ -134,10 +136,12 @@ Program entry point ('main' function).
 		game_window->display();
 		
 		// Handle window events:
+		//Input::getInstance().clearInputs();
 		game_window->dispatchEvents();
 	}
 
 	Log::getInstance().writeMessage("Exiting main render loop...\n");
+	game_window->close();
 	
 
 	// LAB 0 stuff:
