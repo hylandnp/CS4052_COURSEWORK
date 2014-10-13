@@ -13,6 +13,7 @@ Program entry point ('main' function).
 #include "Camera.hpp"
 
 #include <iostream>
+#include <vector>
 
 
 #if (defined(_WIN32) || defined(WIN32)) && !defined(_CONSOLE)
@@ -113,20 +114,45 @@ Program entry point ('main' function).
 
 	// LAB 1 stuff:
 	Camera* game_camera = new Camera();
-	game_camera->setPerspective(90.f,
+	game_camera->setPerspective(45.f,
 								static_cast<float>(game_window->getWidth()) / static_cast<float>(game_window->getHeight()),
 								0.1f,
 								300.f);
-	game_camera->lookAt(glm::vec3(0.f, 0.f, 2.f),
+	game_camera->lookAt(glm::vec3(0.f, 0.f, 3.f),
 						glm::vec3(0.f, 0.f, 0.f));
 
-	Transform t1,
-			  t2,
-			  t3;
-	t1.RotationAxes.xyz = glm::vec3(1.f, 1.f, 1.f);
-	t1.RotationValue = 0.f;
+	// Transformations for multiple primitives:
+	std::vector<Transform> transforms;
 
-	// Runtime:
+	// Transformation flags:
+	bool rotate_test = false,
+	     move_test = false,
+		 uniform_scale_test = false,
+		 scale_x_test = false,
+		 scale_y_test = false,
+		 scale_z_test = false,
+		 all_test = false,
+		 grow_not_shrink = true;
+	
+	transforms.push_back(Transform());
+	transforms[0].Location = glm::vec3(-0.8f, -0.4f, 0.f);
+	transforms[0].RotationAxes = glm::vec3(1.f, 0.f, 0.f);
+	transforms[0].RotationValue = 0.f;
+	transforms[0].Scale = glm::vec3(0.5f, 0.5f, 0.5f);
+
+	transforms.push_back(Transform());
+	transforms[1].Location = glm::vec3(0.8f, -0.4f, 0.f);
+	transforms[1].RotationAxes = glm::vec3(0.f, 1.f, 0.f);
+	transforms[1].RotationValue = 0.f;
+	transforms[1].Scale = glm::vec3(0.5f, 0.5f, 0.5f);
+
+	transforms.push_back(Transform());
+	transforms[2].Location = glm::vec3(0.f, 0.5f, 0.f);
+	transforms[2].RotationAxes = glm::vec3(0.f, 0.f, 1.f);
+	transforms[2].RotationValue = 0.f;
+	transforms[2].Scale = glm::vec3(0.5f, 0.5f, 0.5f);
+
+	// Begin runtime:
 	game_window->setVisible();
 	Log::getInstance().writeMessage("Entering main render loop...\n");
 
@@ -146,17 +172,135 @@ Program entry point ('main' function).
 		if (!game_window->clear()) return EXIT_FAILURE;
 
 		// Render the game scene:
+
+		// Handle input:
+		if (Input::getInstance().isKeyReleased(GLFW_KEY_R))
+		{
+			rotate_test = !rotate_test;
+		}
+
+		if (Input::getInstance().isKeyReleased(GLFW_KEY_A))
+		{
+			all_test = !all_test;
+		}
+		
+		if (Input::getInstance().isKeyReleased(GLFW_KEY_U))
+		{
+			uniform_scale_test = !uniform_scale_test;
+			scale_x_test = false;
+			scale_y_test = false;
+			scale_z_test = false;
+		}
+
+		if (Input::getInstance().isKeyReleased(GLFW_KEY_X))
+		{
+			scale_x_test = !scale_x_test;
+			uniform_scale_test = false;
+			scale_y_test = false;
+			scale_z_test = false;
+		}
+
+		if (Input::getInstance().isKeyReleased(GLFW_KEY_Y))
+		{
+			scale_y_test = !scale_y_test;
+			uniform_scale_test = false;
+			scale_x_test = false;
+			scale_z_test = false;
+		}
+
+		if (Input::getInstance().isKeyReleased(GLFW_KEY_Z))
+		{
+			scale_z_test = !scale_z_test;
+			uniform_scale_test = false;
+			scale_x_test = false;
+			scale_y_test = false;
+		}
+
 		// LAB 1 stuff:
-		simple_shader->asActiveShader();
+		for (auto& elem : transforms)
+		{
+			simple_shader->asActiveShader();
 
-		t1.RotationValue += 50.f * static_cast<float>(delta_time);
-		if (t1.RotationValue >= 360.f) t1.RotationValue = 0.f;
+			// Transform based on input:
+			if (rotate_test || all_test)
+			{
+				elem.RotationValue += 40.f * static_cast<float>(delta_time);
+				if (elem.RotationValue >= 360.f) elem.RotationValue = 0.f;
+			}
+			else
+			{
+				elem.RotationValue = 0.f;
+			}
 
-		t1.rebuildMatrix();
-		simple_shader->setAttribute("transformation", game_camera->getTransform(t1.TranslationMatrix));
+			if (uniform_scale_test || all_test)
+			{
+				elem.Scale += ((grow_not_shrink) ?
+							   glm::vec3(0.5f * static_cast<float>(delta_time))	:
+							   glm::vec3(-0.5f * static_cast<float>(delta_time)));
+			}
+			else if (scale_x_test)
+			{
+				elem.Scale.x += ((grow_not_shrink) ?
+								 0.5f * static_cast<float>(delta_time) :
+								 -0.5f * static_cast<float>(delta_time));
+			}
+			else if (scale_y_test)
+			{
+				elem.Scale.y += ((grow_not_shrink) ?
+							  	 0.5f * static_cast<float>(delta_time) :
+								 -0.5f * static_cast<float>(delta_time));
+			}
+			else if (scale_z_test)
+			{
+				elem.Scale.z += ((grow_not_shrink) ?
+								 0.5f * static_cast<float>(delta_time) :
+								 -0.5f * static_cast<float>(delta_time));
+			}
+			else
+			{
+				elem.Scale = glm::vec3(0.5f, 0.5f, 0.5f);
+			}
 
-		glBindVertexArray(triangle_vao);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+			if ((elem.Scale.x < 0.2f || elem.Scale.x > 0.8f) ||
+				(elem.Scale.y < 0.2f || elem.Scale.y > 0.8f) ||
+				(elem.Scale.z < 0.2f || elem.Scale.z > 0.8f))
+			{
+				grow_not_shrink = !grow_not_shrink;
+			}
+
+			if (Input::getInstance().isKeyPressed(GLFW_KEY_LEFT))
+			{
+				elem.Location.x -= 0.5f * static_cast<float>(delta_time);
+			}
+			else if (Input::getInstance().isKeyPressed(GLFW_KEY_RIGHT))
+			{
+				elem.Location.x += 0.5f * static_cast<float>(delta_time);
+			}
+
+			if (Input::getInstance().isKeyPressed(GLFW_KEY_DOWN))
+			{
+				elem.Location.y -= 0.5f * static_cast<float>(delta_time);
+			}
+			else if (Input::getInstance().isKeyPressed(GLFW_KEY_UP))
+			{
+				elem.Location.y += 0.5f * static_cast<float>(delta_time);
+			}
+
+			if (Input::getInstance().isKeyPressed(GLFW_KEY_N))
+			{
+				elem.Location.z -= 0.5f * static_cast<float>(delta_time);
+			}
+			else if (Input::getInstance().isKeyPressed(GLFW_KEY_M))
+			{
+				elem.Location.z += 0.5f * static_cast<float>(delta_time);
+			}
+
+			elem.rebuildMatrix();
+			simple_shader->setAttribute("transformation", game_camera->getTransform(elem.TranslationMatrix));
+
+			glBindVertexArray(triangle_vao);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
 
 		// Swap the window buffers:
 		game_window->display();
