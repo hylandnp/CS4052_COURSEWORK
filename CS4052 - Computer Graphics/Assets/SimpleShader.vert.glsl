@@ -8,11 +8,12 @@ Simple GLSL vertex shader.
 
 layout(location = 0) in vec3 vertex_point;
 layout(location = 1) in vec3 vertex_colour;
+layout(location = 2) uniform mat4 transformation;
 
 out vec3 colour_from_vertex;
 
 void main()
 {
 	colour_from_vertex = vertex_colour;
-	gl_Position = vec4(vertex_point * vec3(0.5), 1.0);
+	gl_Position = transformation * vec4(vertex_point, 1.0);
 }

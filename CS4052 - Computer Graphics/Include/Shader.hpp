@@ -56,6 +56,10 @@ class Shader
 		// Unload function:
 		bool unLoad();
 
+		// Uniform attribute functions:
+		// TODO - more attribute functions
+		bool setAttribute(const std::string& p_str_id, const glm::mat4& p_value);
+
 		// Getter function:
 		GLuint getRawShaderHandle(Type p_shader_type);
 		GLuint getRawProgramHandle();

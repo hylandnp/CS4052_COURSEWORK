@@ -200,6 +200,26 @@ bool Shader::unLoad()
 }
 
 
+bool Shader::setAttribute(const std::string& p_str_id, const glm::mat4& p_value)
+{
+	GLuint uniform_id = glGetUniformLocation(m_shader_program, p_str_id.c_str());
+
+	if (uniform_id < 0)
+	{
+		Log::getInstance().writeError("Shader.cpp",
+									  __LINE__,
+									  "\tInvalid uniform name string passed to shader function: '%s'!\n\n",
+									  p_str_id.c_str());
+		return false; // no valid uniform
+	}
+	else
+	{
+		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(p_value));
+		return !hasOpenGLErrors("Shader.cpp", __LINE__);
+	}
+}
+
+
 GLuint Shader::getRawShaderHandle(Type p_shader_type)
 {
 	// Return the raw OpenGL integer handle of the given shader type:

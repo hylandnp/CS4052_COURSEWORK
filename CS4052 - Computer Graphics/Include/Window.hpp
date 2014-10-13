@@ -64,6 +64,10 @@ class Window
 
 		// Window handle access:
 		GLFWwindow* getRawWindowHandle();
+
+		// Info getter functions:
+		std::size_t getWidth();
+		std::size_t getHeight();
 	private:
 		GLFWwindow* m_glfw_handle;
 

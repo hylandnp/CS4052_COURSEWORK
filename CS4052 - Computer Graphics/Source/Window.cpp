@@ -120,9 +120,9 @@ bool Window::create(std::size_t p_width,
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CW);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CW);
 
 	// Initially-disabled features:
 	glDisable(GL_LIGHTING);
@@ -267,4 +267,16 @@ void Window::dispatchEvents()
 GLFWwindow* Window::getRawWindowHandle()
 {
 	return m_glfw_handle;
+}
+
+
+std::size_t Window::getWidth()
+{
+	return m_width;
+}
+
+
+std::size_t Window::getHeight()
+{
+	return m_height;
 }

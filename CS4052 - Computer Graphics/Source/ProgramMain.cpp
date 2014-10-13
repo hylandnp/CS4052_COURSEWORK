@@ -9,6 +9,8 @@ Program entry point ('main' function).
 #include "Window.hpp"
 #include "Shader.hpp"
 #include "Input.hpp"
+#include "Transform.hpp"
+#include "Camera.hpp"
 
 #include <iostream>
 
@@ -35,7 +37,7 @@ Program entry point ('main' function).
 	if (!initGLFW()) return EXIT_FAILURE;
 	Window* game_window = new Window();
 
-	if (!game_window->create(600, 600))
+	if (!game_window->create(800, 600))
 	{
 		delete game_window;
 		return EXIT_FAILURE;
@@ -110,33 +112,56 @@ Program entry point ('main' function).
 	}
 
 	// LAB 1 stuff:
-	
+	Camera* game_camera = new Camera();
+	game_camera->setPerspective(90.f,
+								static_cast<float>(game_window->getWidth()) / static_cast<float>(game_window->getHeight()),
+								0.1f,
+								300.f);
+	game_camera->lookAt(glm::vec3(0.f, 0.f, 2.f),
+						glm::vec3(0.f, 0.f, 0.f));
 
-
+	Transform t1,
+			  t2,
+			  t3;
+	t1.RotationAxes.xyz = glm::vec3(1.f, 1.f, 1.f);
+	t1.RotationValue = 0.f;
 
 	// Runtime:
 	game_window->setVisible();
 	Log::getInstance().writeMessage("Entering main render loop...\n");
+
+	// Set framerate calculations:
+	double last_frame = glfwGetTime(),
+		   current_frame = 0.f,
+		   delta_time = 0.f;
 	
 	while (game_window->isOpen())
 	{
+		// Control delta time:
+		current_frame = glfwGetTime();
+		delta_time = current_frame - last_frame;
+		last_frame = current_frame;
+
 		// Clear the window:
 		if (!game_window->clear()) return EXIT_FAILURE;
 
 		// Render the game scene:
-		// TODO
-
-		// LAB 0 stuff:
+		// LAB 1 stuff:
 		simple_shader->asActiveShader();
+
+		t1.RotationValue += 50.f * static_cast<float>(delta_time);
+		if (t1.RotationValue >= 360.f) t1.RotationValue = 0.f;
+
+		t1.rebuildMatrix();
+		simple_shader->setAttribute("transformation", game_camera->getTransform(t1.TranslationMatrix));
+
 		glBindVertexArray(triangle_vao);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-
 
 		// Swap the window buffers:
 		game_window->display();
 		
 		// Handle window events:
-		//Input::getInstance().clearInputs();
 		game_window->dispatchEvents();
 	}
 
