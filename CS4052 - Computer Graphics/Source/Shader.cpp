@@ -20,7 +20,7 @@ Shader::Shader() :
 	m_shader_program(0),
 	m_was_destroyed(false)
 {
-	//
+	// default initialisation...
 }
 
 
@@ -119,9 +119,26 @@ bool Shader::loadFromFile(const std::string& p_vert_src,
 	}
 
 	// Load optional geometry shader component:
+	if (!p_geom_src.empty() && p_geom_src.compare("") != 0 && loadComponentFromFile(Type::GEOMETRY, p_geom_src))
+	{
+		// Attach program only if loaded:
+		Log::getInstance().writeMessage("Loading optional geometry shader component from file: '%s'.\n",
+										p_geom_src.c_str());
+		glAttachShader(m_shader_program, m_geom_shader);
+	}
 
 	// Load optional tesselation shader components:
+	if (!p_tese_src.empty() && p_tese_src.compare("") != 0 && loadComponentFromFile(Type::TESSEVAL, p_tese_src) &&
+		!p_tesc_src.empty() && p_tesc_src.compare("") != 0 && loadComponentFromFile(Type::TESSCTRL, p_tesc_src))
+	{
+		// Attach program only if both tesselation components loaded:
+		Log::getInstance().writeMessage("Loading optional tesselation shader components from file: '%s' and '%s'.\n",
+										p_tesc_src.c_str(),
+										p_tese_src.c_str());
 
+		glAttachShader(m_shader_program, m_tese_shader);
+		glAttachShader(m_shader_program, m_tesc_shader);
+	}
 
 	// Link program and check for errors:
 	glLinkProgram(m_shader_program);
@@ -200,7 +217,7 @@ bool Shader::unLoad()
 }
 
 
-bool Shader::setAttribute(const std::string& p_str_id, const glm::mat4& p_value)
+bool Shader::setAttribute(const std::string& p_str_id, const glm::vec3& p_value)
 {
 	GLuint uniform_id = glGetUniformLocation(m_shader_program, p_str_id.c_str());
 
@@ -214,7 +231,47 @@ bool Shader::setAttribute(const std::string& p_str_id, const glm::mat4& p_value)
 	}
 	else
 	{
-		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(p_value));
+		glUniform3fv(uniform_id, 1, glm::value_ptr(p_value));
+		return !hasOpenGLErrors("Shader.cpp", __LINE__);
+	}
+}
+
+
+bool Shader::setAttribute(const std::string& p_str_id, const glm::vec4& p_value)
+{
+	GLuint uniform_id = glGetUniformLocation(m_shader_program, p_str_id.c_str());
+
+	if (uniform_id < 0)
+	{
+		Log::getInstance().writeError("Shader.cpp",
+									  __LINE__,
+									  "\tInvalid uniform name string passed to shader function: '%s'!\n\n",
+									  p_str_id.c_str());
+		return false; // no valid uniform
+	}
+	else
+	{
+		glUniform4fv(uniform_id, 1, glm::value_ptr(p_value));
+		return !hasOpenGLErrors("Shader.cpp", __LINE__);
+	}
+}
+
+
+bool Shader::setAttribute(const std::string& p_str_id, const glm::mat4& p_value, bool p_transpose)
+{
+	GLuint uniform_id = glGetUniformLocation(m_shader_program, p_str_id.c_str());
+
+	if (uniform_id < 0)
+	{
+		Log::getInstance().writeError("Shader.cpp",
+									  __LINE__,
+									  "\tInvalid uniform name string passed to shader function: '%s'!\n\n",
+									  p_str_id.c_str());
+		return false; // no valid uniform
+	}
+	else
+	{
+		glUniformMatrix4fv(uniform_id, 1, ((p_transpose) ? GL_TRUE : GL_FALSE), glm::value_ptr(p_value));
 		return !hasOpenGLErrors("Shader.cpp", __LINE__);
 	}
 }
@@ -315,17 +372,29 @@ bool Shader::loadComponentFromString(Type p_shader_type, const char* p_shader_st
 		}
 		case Type::GEOMETRY:
 		{
-			//new_shader = glCreateShader(GL_VERTEX_SHADER);
+			m_geom_shader = glCreateShader(GL_GEOMETRY_SHADER);
+			glShaderSource(m_geom_shader, 1, &p_shader_str, NULL);
+			glCompileShader(m_geom_shader);
+
+			if (!isValidShaderComponent(m_geom_shader, "Shader.cpp", __LINE__)) return false;
 			break;
 		}
 		case Type::TESSCTRL:
 		{
-			//new_shader = glCreateShader(GL_VERTEX_SHADER);
+			m_tesc_shader = glCreateShader(GL_TESS_CONTROL_SHADER);
+			glShaderSource(m_tesc_shader, 1, &p_shader_str, NULL);
+			glCompileShader(m_tesc_shader);
+
+			if (!isValidShaderComponent(m_tesc_shader, "Shader.cpp", __LINE__)) return false;
 			break;
 		}
 		case Type::TESSEVAL:
 		{
-			//new_shader = glCreateShader(GL_VERTEX_SHADER);
+			m_tese_shader = glCreateShader(GL_TESS_EVALUATION_SHADER);
+			glShaderSource(m_tese_shader, 1, &p_shader_str, NULL);
+			glCompileShader(m_tese_shader);
+
+			if (!isValidShaderComponent(m_tese_shader, "Shader.cpp", __LINE__)) return false;
 			break;
 		}
 	}

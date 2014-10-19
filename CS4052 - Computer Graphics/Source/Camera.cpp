@@ -17,12 +17,11 @@ Camera::Camera() :
 }
 
 
-const glm::mat4& Camera::getTransform(const glm::mat4& p_model_matrix)
+const glm::mat4& Camera::transform(const glm::mat4& p_model_matrix)
 {
 	m_final_mvp_matrix = m_proj_matrix *
 						 m_view_matrix *
 						 p_model_matrix;
-
 	return m_final_mvp_matrix;
 }
 

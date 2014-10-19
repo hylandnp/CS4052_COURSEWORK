@@ -15,7 +15,7 @@ class Camera
 		Camera();
 		
 		// Getter functions:
-		const glm::mat4& getTransform(const glm::mat4& p_model_matrix);
+		const glm::mat4& transform(const glm::mat4& p_model_matrix);
 		glm::mat4 getViewMatrix();
 
 		// Camera control functions:

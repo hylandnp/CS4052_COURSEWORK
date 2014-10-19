@@ -57,8 +57,9 @@ class Shader
 		bool unLoad();
 
 		// Uniform attribute functions:
-		// TODO - more attribute functions
-		bool setAttribute(const std::string& p_str_id, const glm::mat4& p_value);
+		bool setAttribute(const std::string& p_str_id, const glm::vec3& p_value);
+		bool setAttribute(const std::string& p_str_id, const glm::vec4& p_value);
+		bool setAttribute(const std::string& p_str_id, const glm::mat4& p_value, bool p_transpose = false);
 
 		// Getter function:
 		GLuint getRawShaderHandle(Type p_shader_type);
