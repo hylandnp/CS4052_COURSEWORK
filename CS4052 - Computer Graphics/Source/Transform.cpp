@@ -21,6 +21,6 @@ Transform::Transform() :
 void Transform::rebuildMatrix()
 {
 	this->TranslationMatrix = glm::translate(this->Location) *
-							  glm::rotate(this->RotationValue, this->RotationAxes) *
+							  glm::rotate(glm::radians(this->RotationValue), this->RotationAxes) *
 							  glm::scale(this->Scale);
 }

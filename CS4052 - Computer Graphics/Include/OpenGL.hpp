@@ -14,6 +14,7 @@ General OpenGL-related headers and utility functions.
 
 // OpenGL maths headers:
 #define GLM_SWIZZLE
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
