@@ -25,7 +25,7 @@ class Input
 		void injectKeyEvent(int p_key_code, int p_key_state);
 
 		// Event querying functions:
-		bool isKeyPressed(int p_key_code, bool p_consume = false);
+		bool isKeyPressed(int p_key_code, bool p_repeat = false);
 		bool isKeyReleased(int p_key_code);
 
 		// Raw state access:

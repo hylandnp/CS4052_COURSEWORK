@@ -268,29 +268,29 @@ Program entry point ('main' function).
 				grow_not_shrink = !grow_not_shrink;
 			}
 
-			if (Input::getInstance().isKeyPressed(GLFW_KEY_LEFT))
+			if (Input::getInstance().isKeyPressed(GLFW_KEY_LEFT, true))
 			{
 				elem.Location.x -= 0.5f * static_cast<float>(delta_time);
 			}
-			else if (Input::getInstance().isKeyPressed(GLFW_KEY_RIGHT))
+			else if (Input::getInstance().isKeyPressed(GLFW_KEY_RIGHT, true))
 			{
 				elem.Location.x += 0.5f * static_cast<float>(delta_time);
 			}
 
-			if (Input::getInstance().isKeyPressed(GLFW_KEY_DOWN))
+			if (Input::getInstance().isKeyPressed(GLFW_KEY_DOWN, true))
 			{
 				elem.Location.y -= 0.5f * static_cast<float>(delta_time);
 			}
-			else if (Input::getInstance().isKeyPressed(GLFW_KEY_UP))
+			else if (Input::getInstance().isKeyPressed(GLFW_KEY_UP, true))
 			{
 				elem.Location.y += 0.5f * static_cast<float>(delta_time);
 			}
 
-			if (Input::getInstance().isKeyPressed(GLFW_KEY_N))
+			if (Input::getInstance().isKeyPressed(GLFW_KEY_N, true))
 			{
 				elem.Location.z -= 0.5f * static_cast<float>(delta_time);
 			}
-			else if (Input::getInstance().isKeyPressed(GLFW_KEY_M))
+			else if (Input::getInstance().isKeyPressed(GLFW_KEY_M, true))
 			{
 				elem.Location.z += 0.5f * static_cast<float>(delta_time);
 			}

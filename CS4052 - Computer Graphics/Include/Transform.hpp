@@ -16,8 +16,8 @@ struct Transform
 	glm::vec3 Location,
 			  RotationAxes,
 			  Scale;
-	glm::mat4 TranslationMatrix;
 	float RotationValue;
+	glm::mat4 TranslationMatrix;
 
 	void rebuildMatrix();
 };

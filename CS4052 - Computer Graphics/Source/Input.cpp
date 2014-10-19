@@ -51,14 +51,10 @@ void Input::injectKeyEvent(int p_key_code, int p_key_state)
 // TODO - more event processing
 
 
-bool Input::isKeyPressed(int p_key_code, bool p_consume)
+bool Input::isKeyPressed(int p_key_code, bool p_repeat)
 {
-	bool result = this->getRawKeyState(p_key_code) == GLFW_PRESS;
-
-	// Reset input as soon as detected (if required):
-	if (p_consume) m_key_states[p_key_code] = UNDEFINED_KEY_STATE;
-
-	return result;
+	return ((p_repeat) ? this->getRawKeyState(p_key_code) == GLFW_REPEAT || this->getRawKeyState(p_key_code) == GLFW_PRESS :
+						 this->getRawKeyState(p_key_code) == GLFW_PRESS);
 }
 
 
