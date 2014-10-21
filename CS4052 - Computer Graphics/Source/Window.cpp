@@ -20,7 +20,6 @@ Window::Window() :
 	m_title("?")
 {
 	// Default initialisation...
-	//this->create();
 }
 
 
@@ -122,7 +121,7 @@ bool Window::create(std::size_t p_width,
 
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
-	//glFrontFace(GL_CW);
+	//glFrontFace(GL_CCW);
 
 	// Initially-disabled features:
 	glDisable(GL_LIGHTING);
