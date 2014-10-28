@@ -110,7 +110,7 @@ bool Window::create(std::size_t p_width,
 	glfwSetKeyCallback(m_glfw_handle, &keyEvent);
 
 	// Configure OpenGL:
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 	glClearDepth(1.0);
 	glClearStencil(0);
 	glClearAccum(0.f, 0.f, 0.f, 0.f);
@@ -123,8 +123,11 @@ bool Window::create(std::size_t p_width,
 	//glCullFace(GL_BACK);
 	//glFrontFace(GL_CCW);
 
+	glEnable(GL_TEXTURE_2D);
+
 	// Initially-disabled features:
 	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
 
 	// Setup OpenGL viewport:
 	int fb_width = 0,

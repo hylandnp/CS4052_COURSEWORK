@@ -28,7 +28,7 @@ class Window
 		// Creation function:
 		bool create(std::size_t p_width = 800,
 					std::size_t p_height = 600,
-					const std::string& p_title = "CS4051 - Computer Graphics (NEIL HYLAND - 11511677)");
+					const std::string& p_title = "CS4052 - Computer Graphics (NEIL HYLAND - 11511677)");
 
 		// Manual destruction function:
 		void destroy();

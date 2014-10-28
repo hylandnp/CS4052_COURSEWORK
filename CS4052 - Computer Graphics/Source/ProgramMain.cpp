@@ -66,10 +66,11 @@ Program entry point ('main' function).
 
 	// Load textures:
 	auto texture_id = loadTexture("Assets/barrel.jpg");
+	if (texture_id == 0) return EXIT_FAILURE;
 
 	// Setup transformations:
 	Transform obj_trans;
-	obj_trans.setRotationAxes(glm::vec3(0.f, 1.f, 0.f));
+	obj_trans.setRotationAxes(glm::vec3(1.f, 1.f, 1.f));
 
 	// Create camera:
 	Camera* game_camera = new Camera();
@@ -111,7 +112,7 @@ Program entry point ('main' function).
 		simple_shader->setAttribute("mvp_matrix", game_camera->transform(obj_trans.getMatrix()));
 
 		auto img_loc = glGetUniformLocation(simple_shader->getRawProgramHandle(), "texture_sampler");
-		glUniform1i(img_loc, texture_id);
+		glUniform1i(img_loc, 0);
 
 		glBindVertexArray(barrel_vao);
 		glDrawArrays(GL_TRIANGLES, 0, vertex_count);
