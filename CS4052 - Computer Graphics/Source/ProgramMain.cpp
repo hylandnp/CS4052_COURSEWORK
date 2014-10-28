@@ -16,6 +16,7 @@ Program entry point ('main' function).
 #include <vector>
 
 #include "meshloader.hpp"
+#include "imageloader.hpp"
 
 
 #if (defined(_WIN32) || defined(WIN32)) && !defined(_CONSOLE)
@@ -63,6 +64,9 @@ Program entry point ('main' function).
 
 	vertex_count = loadMesh("Assets/barrel.obj", &barrel_vao, &barrel_vbo);
 
+	// Load textures:
+	auto texture_id = loadTexture("Assets/barrel.jpg");
+
 	// Setup transformations:
 	Transform obj_trans;
 	obj_trans.setRotationAxes(glm::vec3(0.f, 1.f, 0.f));
@@ -103,7 +107,11 @@ Program entry point ('main' function).
 		obj_trans.setRotationValue(rval);
 
 		simple_shader->asActiveShader();
+		glBindTexture(GL_TEXTURE_2D, texture_id);
 		simple_shader->setAttribute("mvp_matrix", game_camera->transform(obj_trans.getMatrix()));
+
+		auto img_loc = glGetUniformLocation(simple_shader->getRawProgramHandle(), "texture_sampler");
+		glUniform1i(img_loc, texture_id);
 
 		glBindVertexArray(barrel_vao);
 		glDrawArrays(GL_TRIANGLES, 0, vertex_count);
