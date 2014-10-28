@@ -110,6 +110,7 @@
     <ClInclude Include="Include\Camera.hpp" />
     <ClInclude Include="Include\Input.hpp" />
     <ClInclude Include="Include\Log.hpp" />
+    <ClInclude Include="Include\meshloader.hpp" />
     <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\Shader.hpp" />
     <ClInclude Include="Include\Transform.hpp" />

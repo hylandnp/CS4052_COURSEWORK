@@ -6,10 +6,13 @@ GLSL fragment shader.
 */
 #version 400
 
-in vec4 colour_from_vertex;
+in vec2 uv_from_vertex;
+uniform sampler2D texture_sampler;
+
 out vec4 frag_colour;
+
 
 void main()
 {
-	frag_colour = colour_from_vertex;
+	frag_colour = texture(texture_sampler, uv_from_vertex).rgba;
 }
