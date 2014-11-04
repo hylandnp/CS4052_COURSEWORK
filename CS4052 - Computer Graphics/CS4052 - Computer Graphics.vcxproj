@@ -85,6 +85,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <AdditionalIncludeDirectories>$(ProjectDir)Libs\GLEW\include;$(ProjectDir)Libs\GLFW3\include;$(ProjectDir)Libs\GLM\include;$(ProjectDir)Libs\ASSIMP\include;$(ProjectDir)Libs\FREEIMAGE\include;Include;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,37 +98,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Camera.cpp" />
-    <ClCompile Include="Source\Input.cpp" />
-    <ClCompile Include="Source\Log.cpp" />
-    <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\ProgramMain.cpp" />
     <ClCompile Include="Source\Resources\ResourceBase.cpp" />
     <ClCompile Include="Source\Resources\ResourceImage.cpp" />
     <ClCompile Include="Source\Resources\ResourceTexture2D.cpp" />
-    <ClCompile Include="Source\Shader.cpp" />
-    <ClCompile Include="Source\Transform.cpp" />
+    <ClCompile Include="Source\Utility\Logger.cpp" />
     <ClCompile Include="Source\Utility\OpenGLErrors.cpp" />
-    <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Camera.hpp" />
-    <ClInclude Include="Include\imageloader.hpp" />
-    <ClInclude Include="Include\Input.hpp" />
-    <ClInclude Include="Include\Log.hpp" />
-    <ClInclude Include="Include\meshloader.hpp" />
-    <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\Resources\ResourceBase.hpp" />
     <ClInclude Include="Include\Resources\ResourceImage.hpp" />
     <ClInclude Include="Include\Resources\ResourceShader.hpp" />
     <ClInclude Include="Include\Resources\ResourceTexture2D.hpp" />
-    <ClInclude Include="Include\Shader.hpp" />
-    <ClInclude Include="Include\Transform.hpp" />
     <ClInclude Include="Include\Utility\Logger.hpp" />
     <ClInclude Include="Include\Utility\NonCopyable.hpp" />
     <ClInclude Include="Include\Utility\OpenGLErrors.hpp" />
     <ClInclude Include="Include\Utility\Singleton.hpp" />
-    <ClInclude Include="Include\Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

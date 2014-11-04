@@ -37,13 +37,14 @@ NEIL HYLAND (11511677)
 	// Enter main loop:
 	bool running = true;
 
-	while (running)
+	//while (running)
 	{
 		// TODO
 	}
 
 
 	// De-initialise game and dispose of managers:
+	Logger::disposeOfInstance();
 
 	#if defined(_DEBUG) || !defined(NDEBUG)
 		std::cout << "Press ENTER to exit program...\n";
