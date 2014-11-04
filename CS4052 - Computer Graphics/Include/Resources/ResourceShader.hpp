@@ -5,6 +5,10 @@ NEIL HYLAND (11511677)
 #pragma once
 #include "Resources/ResourceBase.hpp"
 #include <string>
+#include <glm/fwd.hpp>
+
+// Forward declaration(s):
+class ResourceTexture2D;
 
 
 class ResourceShader : public ResourceBase
@@ -48,8 +52,21 @@ public:
 	// Bind function:
 	bool setActive(bool p_active = true);
 
-	// Attribute function(s):
-	// TODO
+	// Attribute/uniform function(s):
+	bool setAttribute(const std::string& p_uniform_str,
+					  const glm::vec2& p_uniform_data);
+	bool setAttribute(const std::string& p_uniform_str,
+					  const glm::vec3& p_uniform_data);
+	bool setAttribute(const std::string& p_uniform_str,
+					  const glm::vec4& p_uniform_data);
+	bool setAttribute(const std::string& p_uniform_str, 
+					  const glm::mat2& p_uniform_data);
+	bool setAttribute(const std::string& p_uniform_str,
+					  const glm::mat3& p_uniform_data);
+	bool setAttribute(const std::string& p_uniform_str,
+					  const glm::mat4& p_uniform_data);
+	bool setAttribute(const std::string& p_uniform_str,
+					  ResourceTexture2D& p_uniform_data);
 
 	// Getter function(s):
 	unsigned int getRawShaderProgramHandle();

@@ -101,6 +101,7 @@
     <ClCompile Include="Source\ProgramMain.cpp" />
     <ClCompile Include="Source\Resources\ResourceBase.cpp" />
     <ClCompile Include="Source\Resources\ResourceImage.cpp" />
+    <ClCompile Include="Source\Resources\ResourceShader.cpp" />
     <ClCompile Include="Source\Resources\ResourceTexture2D.cpp" />
     <ClCompile Include="Source\Utility\Logger.cpp" />
     <ClCompile Include="Source\Utility\OpenGLErrors.cpp" />

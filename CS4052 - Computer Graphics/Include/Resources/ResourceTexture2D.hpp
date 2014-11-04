@@ -22,13 +22,10 @@ public:
 	// Constructor:
 	ResourceTexture2D();
 
-	// Creation parameters:
-	void setCreationParams(/*TODO*/);
-
 	// Load function(s):
-	bool load(const ResourceImage& p_img_src);
-	bool loadFromFile(const std::string& p_file_src);
-	bool loadFromMemory(const std::string& p_str_src);
+	bool load(ResourceImage& p_img_src, bool p_generate_mipmaps);
+	bool loadFromFile(const std::string& p_file_src, bool p_generate_mipmaps);
+	bool loadFromMemory(const std::string& p_str_src, bool p_generate_mipmaps);
 
 	// Inherited disposal function:
 	void unLoad();
@@ -38,6 +35,10 @@ public:
 
 	// Getter function(s):
 	unsigned int getRawOpenGLHandle();
+	bool hasMipMaps();
 private:
 	unsigned int m_gl_handle;
+	std::size_t m_width,
+				m_height;
+	bool m_has_mipmaps;
 };

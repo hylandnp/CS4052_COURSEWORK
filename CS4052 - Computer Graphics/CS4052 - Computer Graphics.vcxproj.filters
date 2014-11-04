@@ -33,6 +33,9 @@
     <ClCompile Include="Source\Utility\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Resources\ResourceShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Utility\Logger.hpp">
