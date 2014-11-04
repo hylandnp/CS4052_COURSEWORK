@@ -11,72 +11,86 @@ bool checkForOpenGLErrors(const std::string& p_file_name,
 						  const std::string& p_func_name,
 						  std::size_t p_line_no)
 {
-	GLenum err = 0;
-	bool has_error = false,
-		 print_err = false;
-	std::string err_msg;
+	GLenum opengl_err;
+	bool has_found_err = false;
 
-	while ((err = glGetError()) != GL_NO_ERROR)
+	while((opengl_err = glGetError()) != GL_NO_ERROR)
 	{
-		print_err = true;
-
-		// Get error message string:
-		switch (err)
+		// Log error messages for detected OpenGL errors.
+		switch(opengl_err)
 		{
 			case GL_INVALID_ENUM:
 			{
-				has_error = true;
-				err_msg = "Invalid OpenGL enumeration detected!";
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+												 p_line_no,
+												 "Invalid OpenGL enumeration detected!");
+
+				has_found_err = true;
 				break;
 			}
 			case GL_INVALID_VALUE:
 			{
-				has_error = true;
-				err_msg = "Invalid OpenGL value detected!";
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+											 	 p_line_no,
+											 	 "Invalid OpenGL value detected!");
+
+				has_found_err = true;
 				break;
 			}
 			case GL_INVALID_OPERATION:
 			{
-				has_error = true;
-				err_msg = "Invalid OpenGL operation detected!";
-				break;
-			}
-			case GL_STACK_OVERFLOW:
-			{
-				has_error = true;
-				err_msg = "OpenGL stack overflow detected!";
-				break;
-			}
-			case GL_STACK_UNDERFLOW:
-			{
-				has_error = true;
-				err_msg = "OpenGL stack underflow detected!";
-				break;
-			}
-			case GL_OUT_OF_MEMORY:
-			{
-				has_error = true;
-				err_msg = "OpenGL out-of-memory detected!";
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+											 	 p_line_no,
+											 	 "Invalid OpenGL operation detected!");
+
+				has_found_err = true;
 				break;
 			}
 			case GL_INVALID_FRAMEBUFFER_OPERATION:
 			{
-				has_error = true;
-				err_msg = "Invalid OpenGL framebuffer operation detected!";
-				break;
-			}
-			default:
-			{
-				print_err = false;
-				break;
-			}
-		}
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+											  	 p_line_no,
+											 	 "Invalid OpenGL framebuffer operation detected!");
 
-		if (print_err)
-		{
-			// Log error message:
+				has_found_err = true;
+				break;
+			}
+			case GL_OUT_OF_MEMORY:
+			{
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+											  	 p_line_no,
+											  	 "OpenGL out-of-memory detected!");
+
+				has_found_err = true;
+				break;
+			}
+			case GL_STACK_UNDERFLOW:
+			{
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+											 	 p_line_no,
+											     "OpenGL stack underflow detected!");
+
+				has_found_err = true;
+				break;
+			}
+			case GL_STACK_OVERFLOW:
+			{
+				Logger::getInstance().writeError(p_file_name,
+												 p_func_name,
+											  	 p_line_no,
+											     "Invalid OpenGL stack overflow detected!");
+
+				has_found_err = true;
+				break;
+			}
 		}
 	}
 
-	return has_error; // successful
+	return has_found_err;
 }

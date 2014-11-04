@@ -10,6 +10,8 @@ NEIL HYLAND (11511677)
 #include <cstdarg>
 #include <cstddef>
 
+#define LOG_MSG_BUFFER_SIZE 1024
+
 
 /*
 File logging class.
@@ -27,13 +29,12 @@ public:
 	void closeFile();
 
 	// Logging function(s):
-	void write(const std::string& p_file_name,
-			   std::size_t p_line_no,
-			   const std::string& p_msg_str,
+	void write(const char* p_msg_str,
 			   ...);
 	void writeError(const std::string& p_file_name,
+					const std::string& p_func_name,
 				    std::size_t p_line_no,
-				    const std::string& p_err_str,
+				    const char* p_err_str,
 				    ...);
 
 	// Getter(s):

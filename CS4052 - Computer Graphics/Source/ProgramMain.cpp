@@ -28,6 +28,7 @@ NEIL HYLAND (11511677)
 
 	// Setup file logger:
 	if (!Logger::getInstance().openFile("cs4052.log")) return EXIT_FAILURE;
+	Logger::getInstance().write("Entering main function.");
 
 	// Setup framerate calculation:
 	double last_frame_time = glfwGetTime(),
@@ -44,6 +45,7 @@ NEIL HYLAND (11511677)
 
 
 	// De-initialise game and dispose of managers:
+	Logger::getInstance().write("Exiting main function.");
 	Logger::disposeOfInstance();
 
 	#if defined(_DEBUG) || !defined(NDEBUG)
