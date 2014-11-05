@@ -59,6 +59,8 @@
       <SDLCheck>true</SDLCheck>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalIncludeDirectories>$(ProjectDir)Libs\GLEW\include;$(ProjectDir)Libs\GLFW3\include;$(ProjectDir)Libs\GLM\include;$(ProjectDir)Libs\ASSIMP\include;$(ProjectDir)Libs\FREEIMAGE\include;Include;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,6 +107,7 @@
     <ClCompile Include="Source\Resources\ResourceTexture2D.cpp" />
     <ClCompile Include="Source\Utility\Logger.cpp" />
     <ClCompile Include="Source\Utility\OpenGLErrors.cpp" />
+    <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Resources\ResourceBase.hpp" />
@@ -115,6 +118,7 @@
     <ClInclude Include="Include\Utility\NonCopyable.hpp" />
     <ClInclude Include="Include\Utility\OpenGLErrors.hpp" />
     <ClInclude Include="Include\Utility\Singleton.hpp" />
+    <ClInclude Include="Include\Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

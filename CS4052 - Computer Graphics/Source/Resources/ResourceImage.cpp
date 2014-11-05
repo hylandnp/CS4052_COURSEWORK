@@ -5,6 +5,7 @@ NEIL HYLAND (11511677)
 Based on FreeImage tutorial/sample loading code.
 */
 #include "Resources/ResourceImage.hpp"
+#include "Utility/Logger.hpp"
 #include <cstdlib>
 #include <FreeImage.h>
 
@@ -29,7 +30,11 @@ bool ResourceImage::loadFromFile(const std::string& p_file_src)
 	// Check if we can read the given file:
 	if (img_format == FIF_UNKNOWN || !FreeImage_FIFSupportsReading(img_format))
 	{
-		// TODO - err message
+		Logger::getInstance().writeError("ResourceImage.cpp",
+										 "loadFromFile()",
+										 __LINE__,
+										 "Cannot read file format: '%s'!",
+										 p_file_src.c_str());
 		return false;
 	}
 
@@ -38,7 +43,11 @@ bool ResourceImage::loadFromFile(const std::string& p_file_src)
 
 	if (!fif_bitmap)
 	{
-		// TODO - err message
+		Logger::getInstance().writeError("ResourceImage.cpp",
+										 "loadFromFile()",
+										 __LINE__,
+										 "Failed to load image file: '%s', may be missing or corrupted!",
+										 p_file_src.c_str());
 		return false;
 	}
 

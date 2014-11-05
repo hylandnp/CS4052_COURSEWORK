@@ -6,6 +6,7 @@ NEIL HYLAND (11511677)
 #include "Resources/ResourceImage.hpp"
 #include "Utility/OpenGLErrors.hpp"
 #include "Utility/Logger.hpp"
+
 #include <GL/glew.h>
 
 
@@ -24,6 +25,7 @@ bool ResourceTexture2D::load(ResourceImage& p_img_src, bool p_generate_mipmaps)
 {
 	this->unLoad(); // dispose of previous texture
 
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &m_gl_handle);
 	glBindTexture(GL_TEXTURE_2D, m_gl_handle);
 
@@ -46,7 +48,6 @@ bool ResourceTexture2D::load(ResourceImage& p_img_src, bool p_generate_mipmaps)
 	if (p_generate_mipmaps)
 	{
 		glGenerateMipmap(GL_TEXTURE_2D);
-
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -69,12 +70,12 @@ bool ResourceTexture2D::loadFromFile(const std::string& p_file_src, bool p_gener
 {
 	ResourceImage img_src;
 
-	if(img_src.loadFromFile(p_file_src))
+	if(!img_src.loadFromFile(p_file_src))
 	{
 		Logger::getInstance().writeError("ResourceTexture2D.cpp",
 										 "loadFromFile()",
 										 __LINE__,
-										 "Failed to load texture from file: '%s', may be missing or corrupted!",
+										 "Failed to create OpenGL texture from file: '%s'!",
 										 p_file_src.c_str());
 		return false;
 	}
@@ -87,12 +88,12 @@ bool ResourceTexture2D::loadFromMemory(const std::string& p_str_src, bool p_gene
 {
 	ResourceImage img_src;
 	
-	if(img_src.loadFromMemory(p_str_src))
+	if(!img_src.loadFromMemory(p_str_src))
 	{
 		Logger::getInstance().writeError("ResourceTexture2D.cpp",
 										 "loadFromMemory()",
 										 __LINE__,
-										 "Failed to load texture from memory!");
+										 "Failed to create OpenGL texture from memory!");
 		return false;
 	}
 

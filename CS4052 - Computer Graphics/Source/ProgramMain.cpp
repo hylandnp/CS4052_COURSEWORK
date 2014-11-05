@@ -9,7 +9,10 @@ NEIL HYLAND (11511677)
 	#include <iostream>
 #endif // _DEBUG || NDEBUG
 
+#include "Window.hpp"
 #include "Utility/Logger.hpp"
+
+#include "Resources/ResourceTexture2D.hpp"
 
 
 // Program entry point function:
@@ -30,23 +33,41 @@ NEIL HYLAND (11511677)
 	if (!Logger::getInstance().openFile("cs4052.log")) return EXIT_FAILURE;
 	Logger::getInstance().write("Entering main function.");
 
+	// Create game window:
+	if (!Window::initGLFW()) return EXIT_FAILURE;
+	auto game_window = new Window();
+
+	if (!game_window->create()) return EXIT_FAILURE;
+	game_window->setActive(true);
+	game_window->setVsync(true);
+
 	// Setup framerate calculation:
 	double last_frame_time = glfwGetTime(),
 		   this_frame_time = 0.0,
 		   delta_time = 0.0;
 
+	ResourceTexture2D tex;
+	tex.loadFromFile("Assets/barrel.jpg", true);
+
 	// Enter main loop:
-	bool running = true;
-
-	//while (running)
+	game_window->setVisible(true);
+	while (game_window->isOpen())
 	{
-		// TODO
-	}
+		if (!game_window->clear()) return EXIT_FAILURE;
 
+		// Render game scene:
+		// TODO
+
+		game_window->display();
+	}
 
 	// De-initialise game and dispose of managers:
 	Logger::getInstance().write("Exiting main function.");
 	Logger::disposeOfInstance();
+
+	game_window->close();
+	delete game_window;
+	Window::deInitGLFW();
 
 	#if defined(_DEBUG) || !defined(NDEBUG)
 		std::cout << "Press ENTER to exit program...\n";
