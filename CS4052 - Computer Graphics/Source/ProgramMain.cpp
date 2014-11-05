@@ -13,6 +13,7 @@ NEIL HYLAND (11511677)
 #include "Utility/Logger.hpp"
 
 #include "Resources/ResourceTexture2D.hpp"
+#include "Resources/ResourceShader.hpp"
 
 
 // Program entry point function:
@@ -48,6 +49,9 @@ NEIL HYLAND (11511677)
 
 	ResourceTexture2D tex;
 	tex.loadFromFile("Assets/barrel.jpg", true);
+	ResourceShader sha;
+	sha.loadFromFile("Assets/default_texture_nolighting.vert.glsl",
+					 "Assets/default_texture_nolighting.frag.glsl");
 
 	// Enter main loop:
 	game_window->setVisible(true);
@@ -61,10 +65,14 @@ NEIL HYLAND (11511677)
 		game_window->display();
 	}
 
+	tex.unLoad();
+	sha.unLoad();
+
 	// De-initialise game and dispose of managers:
 	Logger::getInstance().write("Exiting main function.");
 	Logger::disposeOfInstance();
 
+	// Close the game window:
 	game_window->close();
 	delete game_window;
 	Window::deInitGLFW();
