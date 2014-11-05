@@ -62,6 +62,8 @@ bool ResourceTexture2D::load(ResourceImage& p_img_src, bool p_generate_mipmaps)
 	}
 
 	if (checkForOpenGLErrors("ResourceTexture2D.cpp", "load()", __LINE__)) return false;
+
+	Logger::getInstance().write("Converted software image to OpenGL texture successfully.");
 	return (m_is_loaded = true);
 }
 
@@ -84,11 +86,11 @@ bool ResourceTexture2D::loadFromFile(const std::string& p_file_src, bool p_gener
 }
 
 
-bool ResourceTexture2D::loadFromMemory(const std::string& p_str_src, bool p_generate_mipmaps)
+bool ResourceTexture2D::loadFromString(const std::string& p_str_src, bool p_generate_mipmaps)
 {
 	ResourceImage img_src;
 	
-	if(!img_src.loadFromMemory(p_str_src))
+	if(!img_src.loadFromString(p_str_src))
 	{
 		Logger::getInstance().writeError("ResourceTexture2D.cpp",
 										 "loadFromMemory()",
@@ -117,7 +119,7 @@ void ResourceTexture2D::unLoad()
 bool ResourceTexture2D::setActive(bool p_active)
 {
 	glBindTexture(((p_active) ? m_gl_handle : 0), GL_TEXTURE_2D);
-	return !checkForOpenGLErrors("ResourceTexture2D.cpp", "setActive(bool)", __LINE__);
+	return !checkForOpenGLErrors("ResourceTexture2D.cpp", "setActive()", __LINE__);
 }
 
 

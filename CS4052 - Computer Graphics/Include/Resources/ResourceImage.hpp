@@ -20,7 +20,7 @@ public:
 
 	// Load function(s):
 	bool loadFromFile(const std::string& p_file_src);
-	bool loadFromMemory(const std::string& p_str_src);
+	bool loadFromString(const std::string& p_str_src);
 
 	// Inherited disposal function:
 	void unLoad();

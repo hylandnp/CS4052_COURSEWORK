@@ -23,6 +23,8 @@ ResourceImage::ResourceImage() :
 
 bool ResourceImage::loadFromFile(const std::string& p_file_src)
 {
+	this->unLoad(); // dispose of previous image data
+
 	// Attempt to deduce image file format:
 	auto img_format = FreeImage_GetFileType(p_file_src.c_str(), 0);
 	if (img_format == FIF_UNKNOWN) img_format = FreeImage_GetFIFFromFilename(p_file_src.c_str());
@@ -64,6 +66,9 @@ bool ResourceImage::loadFromFile(const std::string& p_file_src)
 	m_height = FreeImage_GetHeight(fif_bitmap);
 	m_img_size = 4 * m_width * m_height;
 
+	Logger::getInstance().write("Loaded image from file: '%s' successfully.",
+								p_file_src.c_str());
+
 	// Store image bytes in array and return from function:
 	m_img_data = new unsigned char[m_img_size];
 	std::memcpy(m_img_data, FreeImage_GetBits(fif_bitmap), m_img_size);
@@ -73,10 +78,13 @@ bool ResourceImage::loadFromFile(const std::string& p_file_src)
 }
 
 
-bool ResourceImage::loadFromMemory(const std::string& p_str_src)
+bool ResourceImage::loadFromString(const std::string& p_str_src)
 {
+	this->unLoad(); // dispose of previous image data
+
 	// TODO
 
+	Logger::getInstance().write("Loaded image from memory location successfully.");
 	return (m_is_loaded = true); // successful
 }
 

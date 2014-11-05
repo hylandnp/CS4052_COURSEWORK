@@ -25,7 +25,7 @@ public:
 	// Load function(s):
 	bool load(ResourceImage& p_img_src, bool p_generate_mipmaps);
 	bool loadFromFile(const std::string& p_file_src, bool p_generate_mipmaps);
-	bool loadFromMemory(const std::string& p_str_src, bool p_generate_mipmaps);
+	bool loadFromString(const std::string& p_str_src, bool p_generate_mipmaps);
 
 	// Inherited disposal function:
 	void unLoad();
