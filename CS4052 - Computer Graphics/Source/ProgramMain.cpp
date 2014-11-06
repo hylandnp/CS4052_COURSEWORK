@@ -53,6 +53,9 @@ NEIL HYLAND (11511677)
 	sha.loadFromFile("Assets/default_texture_nolighting.vert.glsl",
 					 "Assets/default_texture_nolighting.frag.glsl");
 
+	sha.setActive(true);
+	sha.setUniformAttribute("texture_sampler", tex);
+
 	// Enter main loop:
 	game_window->setVisible(true);
 	while (game_window->isOpen())

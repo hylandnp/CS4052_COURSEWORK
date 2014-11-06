@@ -118,7 +118,8 @@ void ResourceTexture2D::unLoad()
 
 bool ResourceTexture2D::setActive(bool p_active)
 {
-	glBindTexture(((p_active) ? m_gl_handle : 0), GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, ((p_active) ? m_gl_handle : 0));
 	return !checkForOpenGLErrors("ResourceTexture2D.cpp", "setActive()", __LINE__);
 }
 

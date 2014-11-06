@@ -10,6 +10,7 @@ NEIL HYLAND (11511677)
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <fstream>
 #include <cstring>
 
@@ -302,7 +303,146 @@ int ResourceShader::getUniformLocation(const std::string& p_uniform_str)
 }
 
 
-// TODO attributes/uniforms
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 const glm::vec2& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform vector: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	glUniform2fv(location, 1, glm::value_ptr(p_uniform_data));
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
+
+
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 const glm::vec3& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform vector: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	glUniform3fv(location, 1, glm::value_ptr(p_uniform_data));
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
+
+
+
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 const glm::vec4& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform vector: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	glUniform4fv(location, 1, glm::value_ptr(p_uniform_data));
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
+
+
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 const glm::mat2& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform matrix: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(p_uniform_data));
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
+
+
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 const glm::mat3& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform matrix: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(p_uniform_data));
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
+
+
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 const glm::mat4& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform matrix: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(p_uniform_data));
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
+
+
+bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
+										 ResourceTexture2D& p_uniform_data)
+{
+	auto location = this->getUniformLocation(p_uniform_str);
+
+	if (location < 0)
+	{
+		Logger::getInstance().writeError("ResourceShader.cpp",
+										 "setUniformAttribute()",
+										 __LINE__,
+										 "Failed to locate shader uniform texture/sampler: '%s', may be missing or invalid!",
+										 p_uniform_str.c_str());
+		return false;
+	}
+
+	p_uniform_data.setActive(true);
+	glUniform1i(location, 0);
+	return !checkForOpenGLErrors("ResourceShader.cpp", "setUniformAttribute()", __LINE__);
+}
 
 
 unsigned int ResourceShader::getRawShaderProgramHandle()
