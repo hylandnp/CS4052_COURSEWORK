@@ -103,6 +103,7 @@
     <ClCompile Include="Source\ProgramMain.cpp" />
     <ClCompile Include="Source\Resources\ResourceBase.cpp" />
     <ClCompile Include="Source\Resources\ResourceImage.cpp" />
+    <ClCompile Include="Source\Resources\ResourceMeshStatic.cpp" />
     <ClCompile Include="Source\Resources\ResourceShader.cpp" />
     <ClCompile Include="Source\Resources\ResourceTexture2D.cpp" />
     <ClCompile Include="Source\Utility\Logger.cpp" />
@@ -112,6 +113,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Resources\ResourceBase.hpp" />
     <ClInclude Include="Include\Resources\ResourceImage.hpp" />
+    <ClInclude Include="Include\Resources\ResourceMeshStatic.hpp" />
     <ClInclude Include="Include\Resources\ResourceShader.hpp" />
     <ClInclude Include="Include\Resources\ResourceTexture2D.hpp" />
     <ClInclude Include="Include\Utility\Logger.hpp" />

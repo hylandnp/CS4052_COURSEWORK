@@ -87,11 +87,10 @@ bool ResourceShader::loadFromString(const char* p_vert_str,
 		glAttachShader(m_program_handle, m_tesc_shader);
 	}
 
-	// Link into shader program:
+	// Link into shader program and return from function:
 	glLinkProgram(m_program_handle);
-	return !checkForOpenGLErrors("ResourceShader.cpp",
-								 "loadFromString()",
-								 __LINE__);
+	if (checkForOpenGLErrors("ResourceShader.cpp", "loadFromString()", __LINE__)) return false;
+	return (m_is_loaded = true);
 }
 
 
@@ -118,7 +117,7 @@ bool ResourceShader::loadFromFile(const std::string& p_vert_src,
 		input.close();
 		input.clear();
 
-		Logger::getInstance().write("Loaded vertex shader component: '%s'.", p_vert_src.c_str());
+		Logger::getInstance().write("Loaded vertex shader component: '%s' successfully.", p_vert_src.c_str());
 	}
 	else
 	{
@@ -141,7 +140,7 @@ bool ResourceShader::loadFromFile(const std::string& p_vert_src,
 		input.close();
 		input.clear();
 
-		Logger::getInstance().write("Loaded fragment shader component: '%s'.", p_frag_src.c_str());
+		Logger::getInstance().write("Loaded fragment shader component: '%s' successfully.", p_frag_src.c_str());
 	}
 	else
 	{
@@ -167,7 +166,7 @@ bool ResourceShader::loadFromFile(const std::string& p_vert_src,
 			input.close();
 			input.clear();
 
-			Logger::getInstance().write("Loaded geometry shader component: '%s'.", p_geom_src.c_str());
+			Logger::getInstance().write("Loaded geometry shader component: '%s' successfully.", p_geom_src.c_str());
 		}
 		else
 		{
@@ -199,7 +198,7 @@ bool ResourceShader::loadFromFile(const std::string& p_vert_src,
 			input.close();
 			input.clear();
 
-			Logger::getInstance().write("Loaded tesselation evaluation shader component: '%s'.", p_tese_src.c_str());
+			Logger::getInstance().write("Loaded tesselation evaluation shader component: '%s' successfully.", p_tese_src.c_str());
 		}
 		else
 		{
@@ -222,7 +221,7 @@ bool ResourceShader::loadFromFile(const std::string& p_vert_src,
 			input.close();
 			input.clear();
 
-			Logger::getInstance().write("Loaded tesselation control shader component: '%s'.", p_tesc_src.c_str());
+			Logger::getInstance().write("Loaded tesselation control shader component: '%s' successfully.", p_tesc_src.c_str());
 		}
 		else
 		{

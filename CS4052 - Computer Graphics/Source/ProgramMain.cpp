@@ -14,6 +14,7 @@ NEIL HYLAND (11511677)
 
 #include "Resources/ResourceTexture2D.hpp"
 #include "Resources/ResourceShader.hpp"
+#include "Resources/ResourceMeshStatic.hpp"
 
 
 // Program entry point function:
@@ -47,14 +48,22 @@ NEIL HYLAND (11511677)
 		   this_frame_time = 0.0,
 		   delta_time = 0.0;
 
+
+
 	ResourceTexture2D tex;
 	tex.loadFromFile("Assets/barrel.jpg", true);
+
 	ResourceShader sha;
 	sha.loadFromFile("Assets/default_texture_nolighting.vert.glsl",
 					 "Assets/default_texture_nolighting.frag.glsl");
 
+	ResourceMeshStatic mesh;
+	//mesh.loadFromFile();
+
 	sha.setActive(true);
 	sha.setUniformAttribute("texture_sampler", tex);
+	mesh.setActive(true, true);
+
 
 	// Enter main loop:
 	game_window->setVisible(true);
@@ -68,6 +77,7 @@ NEIL HYLAND (11511677)
 		game_window->display();
 	}
 
+	mesh.unLoad();
 	tex.unLoad();
 	sha.unLoad();
 
