@@ -106,6 +106,7 @@
     <ClCompile Include="Source\Resources\ResourceMeshStatic.cpp" />
     <ClCompile Include="Source\Resources\ResourceShader.cpp" />
     <ClCompile Include="Source\Resources\ResourceTexture2D.cpp" />
+    <ClCompile Include="Source\Scene\SceneNodeBase.cpp" />
     <ClCompile Include="Source\Utility\Logger.cpp" />
     <ClCompile Include="Source\Utility\OpenGLErrors.cpp" />
     <ClCompile Include="Source\Window.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Include\Resources\ResourceMeshStatic.hpp" />
     <ClInclude Include="Include\Resources\ResourceShader.hpp" />
     <ClInclude Include="Include\Resources\ResourceTexture2D.hpp" />
+    <ClInclude Include="Include\Scene\SceneNodeBase.hpp" />
     <ClInclude Include="Include\Utility\Logger.hpp" />
     <ClInclude Include="Include\Utility\NonCopyable.hpp" />
     <ClInclude Include="Include\Utility\OpenGLErrors.hpp" />

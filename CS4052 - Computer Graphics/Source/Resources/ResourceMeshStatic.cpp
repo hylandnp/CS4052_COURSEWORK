@@ -111,6 +111,9 @@ bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src)
 	glBindVertexArray(0);
 
 	if (checkForOpenGLErrors("ResourceMeshState.cpp", "loadFromFile()", __LINE__)) return false;
+
+	Logger::getInstance().write("Loaded static/simple mesh from file: '%s' successfully!",
+								p_file_src.c_str());
 	return (m_is_loaded = true);
 }
 

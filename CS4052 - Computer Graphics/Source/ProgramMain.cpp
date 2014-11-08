@@ -15,6 +15,7 @@ NEIL HYLAND (11511677)
 #include "Resources/ResourceTexture2D.hpp"
 #include "Resources/ResourceShader.hpp"
 #include "Resources/ResourceMeshStatic.hpp"
+#include "Scene/SceneNodeBase.hpp"
 
 
 // Program entry point function:
@@ -58,12 +59,20 @@ NEIL HYLAND (11511677)
 					 "Assets/default_texture_nolighting.frag.glsl");
 
 	ResourceMeshStatic mesh;
-	//mesh.loadFromFile();
+	mesh.loadFromFile("Assets/barrel.obj");
 
 	sha.setActive(true);
 	sha.setUniformAttribute("texture_sampler", tex);
 	mesh.setActive(true, true);
 
+	SceneNodeBase node("Root", SceneNodeType::INVALID, nullptr);
+	node.addChild(new SceneNodeBase("Child1", SceneNodeType::INVALID, nullptr));
+	node.addChild(new SceneNodeBase("Child2", SceneNodeType::INVALID, nullptr));
+	node.getChild("Child2")->addChild(new SceneNodeBase("Child3", SceneNodeType::INVALID, nullptr));
+	node.getChild("Child2")->addChild(new SceneNodeBase("Child4", SceneNodeType::INVALID, nullptr));
+
+	std::cout << node.countChildren(true) << std::endl;
+	std::cout << node.getTreeInfo() << std::endl;
 
 	// Enter main loop:
 	game_window->setVisible(true);
@@ -80,6 +89,7 @@ NEIL HYLAND (11511677)
 	mesh.unLoad();
 	tex.unLoad();
 	sha.unLoad();
+	node.removeAllChildren();
 
 	// De-initialise game and dispose of managers:
 	Logger::getInstance().write("Exiting main function.");
