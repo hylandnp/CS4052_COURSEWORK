@@ -43,12 +43,14 @@ public:
 	void moveBy(float p_offset_x, float p_offset_y, float p_offset_z);
 	void moveBy(const glm::vec3& p_offset);
 
-	// Rotation setter(s):
+	// Rotation setter(s), in Euler angles unless specified otherwise:
 	void setRotationX(float p_new_x);
 	void setRotationY(float p_new_y);
 	void setRotationZ(float p_new_z);
 	void setRotation(float p_new_x, float p_new_y, float p_new_z);
 	void setRotation(const glm::vec3& p_rotation);
+	void setRotationAsQuaternion(float p_new_w, float p_new_x, float p_new_y, float p_new_z); // buggy on Y-axis
+	void setRotationAsQuaternion(const glm::quat& p_rotation); // buggy on Y-axis
 
 	void rotateByX(float p_offset_x);
 	void rotateByY(float p_offset_y);
@@ -71,11 +73,6 @@ public:
 	void scaleBy(float p_uniform_offset);
 	void scaleBy(const glm::vec3& p_offset);
 
-	// Orientation setters(s):
-	//void setOrientation(float p_new_w, float p_new_x, float p_new_y, float p_new_z);
-	//void setOrientation(const glm::quat& p_orientation);
-	//void setOrientation(const glm::vec4& p_orientation);
-
 	// Translation getter(s):
 	float getPositionX();
 	float getPositionY();
@@ -87,6 +84,7 @@ public:
 	float getRotationY();
 	float getRotationZ();
 	const glm::vec3& getRotation();
+	const glm::quat& getRotationAsQuaternion();
 
 	// Scale getter(s):
 	float getScaleX();
@@ -94,11 +92,14 @@ public:
 	float getScaleZ();
 	const glm::vec3& getScale();
 
-	// Orientation getter(s):
-	//const glm::quat& getOrientation();
-
 	// Utility function(s):
 	void forceRebuildOfMatrices();
+	void lookAt(float p_target_x,
+				float p_target_y,
+				float p_targer_z,
+				const glm::vec3& p_up = glm::vec3(0.f, 1.f, 0.f));
+	void lookAt(const glm::vec3& p_target,
+				const glm::vec3& p_up = glm::vec3(0.f, 1.f, 0.f));
 
 	// Other setter(s):
 	void setRebuildMatrices(bool p_rebuild = true);
@@ -114,9 +115,9 @@ protected:
 		 m_transform_affects_children;
 
 	glm::vec3 m_location,
-			  m_rotation,
+			  m_rotation_euler,
 			  m_scale;
-	glm::quat m_orientation; // TODO
+	glm::quat m_rotation_quat;
 	glm::mat4 m_cached_global_matrix,
 			  m_cached_local_matrix;
 

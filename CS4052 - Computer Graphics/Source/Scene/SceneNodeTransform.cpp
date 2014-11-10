@@ -3,8 +3,10 @@ CS4052 - Computer Graphics
 NEIL HYLAND (11511677)
 */
 #include "Scene/SceneNodeTransform.hpp"
+#include <cmath>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <algorithm>
 
 
 SceneNodeTransform::SceneNodeTransform(const std::string& p_name,
@@ -12,9 +14,9 @@ SceneNodeTransform::SceneNodeTransform(const std::string& p_name,
 	m_rebuild_matrices(true),
 	m_transform_affects_children(true),
 	m_location(0.f),
-	m_rotation(0.f),
+	m_rotation_euler(0.f),
 	m_scale(1.f),
-	m_orientation(0.f, 0.f, 0.f, 0.f),
+	m_rotation_quat(glm::radians(m_rotation_euler)),
 	m_cached_local_matrix(1.f),
 	m_cached_global_matrix(1.f)
 {
@@ -116,73 +118,155 @@ void SceneNodeTransform::moveBy(const glm::vec3& p_offset)
 
 void SceneNodeTransform::setRotationX(float p_new_x)
 {
-	m_rotation.x = p_new_x;
+	m_rotation_euler.x = fmod(p_new_x, 360.f);
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::setRotationY(float p_new_y)
 {
-	m_rotation.y = p_new_y;
+	m_rotation_euler.y = fmod(p_new_y, 360.f);
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
+
 void SceneNodeTransform::setRotationZ(float p_new_z)
 {
-	m_rotation.z = p_new_z;
+	m_rotation_euler.z = fmod(p_new_z, 360.f);
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::setRotation(float p_new_x, float p_new_y, float p_new_z)
 {
-	m_rotation.x = p_new_x;
-	m_rotation.y = p_new_y;
-	m_rotation.z = p_new_z;
+	m_rotation_euler.x = fmod(p_new_x, 360.f);
+	m_rotation_euler.y = fmod(p_new_y, 360.f);
+	m_rotation_euler.z = fmod(p_new_z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::setRotation(const glm::vec3& p_rotation)
 {
-	m_rotation = p_rotation;
+	m_rotation_euler.x = fmod(p_rotation.x, 360.f);
+	m_rotation_euler.y = fmod(p_rotation.y, 360.f);
+	m_rotation_euler.z = fmod(p_rotation.z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
+	m_rebuild_matrices = true;
+}
+
+
+void SceneNodeTransform::setRotationAsQuaternion(float p_new_w, float p_new_x, float p_new_y, float p_new_z)
+{
+	m_rotation_quat = glm::quat(glm::radians(p_new_w),
+								glm::radians(p_new_x),
+								glm::radians(p_new_y),
+								glm::radians(p_new_z));
+
+	m_rotation_euler = glm::degrees(glm::eulerAngles(m_rotation_quat));
+	m_rotation_euler.x = fmod(m_rotation_euler.x, 360.f);
+	m_rotation_euler.y = fmod(m_rotation_euler.y, 360.f);
+	m_rotation_euler.z = fmod(m_rotation_euler.z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+	m_rebuild_matrices = true;
+}
+
+
+void SceneNodeTransform::setRotationAsQuaternion(const glm::quat& p_rotation)
+{
+	m_rotation_quat = p_rotation;
+
+	m_rotation_euler = glm::degrees(glm::eulerAngles(m_rotation_quat));
+	m_rotation_euler.x = fmod(m_rotation_euler.x, 360.f);
+	m_rotation_euler.y = fmod(m_rotation_euler.y, 360.f);
+	m_rotation_euler.z = fmod(m_rotation_euler.z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::rotateByX(float p_offset_x)
 {
-	m_rotation.x += p_offset_x;
+	m_rotation_euler.x = fmod(m_rotation_euler.x + p_offset_x, 360.f);
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::rotateByY(float p_offset_y)
 {
-	m_rotation.y += p_offset_y;
+	m_rotation_euler.y = fmod(m_rotation_euler.y + p_offset_y, 360.f);
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::rotateByZ(float p_offset_z)
 {
-	m_rotation.z += p_offset_z;
+	m_rotation_euler.z = fmod(m_rotation_euler.z + p_offset_z, 360.f);
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::rotateBy(float p_offset_x, float p_offset_y, float p_offset_z)
 {
-	m_rotation.x += p_offset_x;
-	m_rotation.y += p_offset_y;
-	m_rotation.z += p_offset_z;
+	m_rotation_euler.x = fmod(m_rotation_euler.x + p_offset_y, 360.f);
+	m_rotation_euler.y = fmod(m_rotation_euler.y + p_offset_y, 360.f);
+	m_rotation_euler.z = fmod(m_rotation_euler.z + p_offset_y, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
 
 void SceneNodeTransform::rotateBy(const glm::vec3& p_rotation)
 {
-	m_rotation += p_rotation;
+	m_rotation_euler.x = fmod(m_rotation_euler.x + p_rotation.x, 360.f);
+	m_rotation_euler.y = fmod(m_rotation_euler.y + p_rotation.y, 360.f);
+	m_rotation_euler.z = fmod(m_rotation_euler.z + p_rotation.z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+
+	m_rotation_quat = glm::quat(glm::radians(m_rotation_euler));
 	m_rebuild_matrices = true;
 }
 
@@ -292,25 +376,31 @@ const glm::vec3& SceneNodeTransform::getPosition()
 
 float SceneNodeTransform::getRotationX()
 {
-	return m_rotation.x;
+	return m_rotation_euler.x;
 }
 
 
 float SceneNodeTransform::getRotationY()
 {
-	return m_rotation.y;
+	return m_rotation_euler.y;
 }
 
 
 float SceneNodeTransform::getRotationZ()
 {
-	return m_rotation.z;
+	return m_rotation_euler.z;
 }
 
 
 const glm::vec3& SceneNodeTransform::getRotation()
 {
-	return m_rotation;
+	return m_rotation_euler;
+}
+
+
+const glm::quat& SceneNodeTransform::getRotationAsQuaternion()
+{
+	return m_rotation_quat;
 }
 
 
@@ -350,6 +440,42 @@ void SceneNodeTransform::setRebuildMatrices(bool p_rebuild)
 }
 
 
+void SceneNodeTransform::lookAt(float p_target_x,
+								float p_target_y,
+								float p_target_z,
+								const glm::vec3& p_up)
+{
+	m_rotation_quat = glm::quat_cast(glm::lookAt(m_location, glm::vec3(p_target_x, p_target_y, p_target_z), p_up));
+
+	m_rotation_euler = glm::degrees(glm::eulerAngles(m_rotation_quat));
+	m_rotation_euler.x = fmod(m_rotation_euler.x, 360.f);
+	m_rotation_euler.y = fmod(m_rotation_euler.y, 360.f);
+	m_rotation_euler.z = fmod(m_rotation_euler.z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+	m_rebuild_matrices = true;
+}
+
+
+void SceneNodeTransform::lookAt(const glm::vec3& p_target,
+								const glm::vec3& p_up)
+{
+	m_rotation_quat = glm::quat_cast(glm::lookAt(m_location, p_target, p_up));
+
+	m_rotation_euler = glm::degrees(glm::eulerAngles(m_rotation_quat));
+	m_rotation_euler.x = fmod(m_rotation_euler.x, 360.f);
+	m_rotation_euler.y = fmod(m_rotation_euler.y, 360.f);
+	m_rotation_euler.z = fmod(m_rotation_euler.z, 360.f);
+
+	if (m_rotation_euler.x < 0.f) m_rotation_euler.x += 360.f;
+	if (m_rotation_euler.y < 0.f) m_rotation_euler.y += 360.f;
+	if (m_rotation_euler.z < 0.f) m_rotation_euler.z += 360.f;
+	m_rebuild_matrices = true;
+}
+
+
 void SceneNodeTransform::setTransformAffectsChildren(bool p_affects_children)
 {
 	m_transform_affects_children = p_affects_children;
@@ -385,25 +511,24 @@ const glm::mat4& SceneNodeTransform::getCachedLocalMatrix()
 void SceneNodeTransform::rebuildMatrix()
 {
 	// Translation:
-	m_cached_local_matrix = glm::translate(glm::mat4(1.f), m_location);
-	//m_cached_local_matrix = glm::inverse(glm::lookAt(m_location, glm::vec3(10.f, 10.f, 0.f), glm::vec3(0.f, 1.f, 0.f)));
+	m_cached_local_matrix = glm::translate(m_location);
 
-	// Rotation:
-	m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
-										glm::radians(m_rotation.x),
-										glm::vec3(1.f, 0.f, 0.f));
-	m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
-										glm::radians(m_rotation.y),
-										glm::vec3(0.f, 1.f, 0.f));
-	m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
-										glm::radians(m_rotation.z),
-										glm::vec3(0.f, 0.f, 1.f));
+	// Rotation (old):
+	//m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
+	//									glm::radians(m_rotation_euler.x),
+	//									glm::vec3(1.f, 0.f, 0.f));
+	//m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
+	//									glm::radians(m_rotation_euler.y),
+	//									glm::vec3(0.f, 1.f, 0.f));
+	//m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
+	//									glm::radians(m_rotation_euler.z),
+	//									glm::vec3(0.f, 0.f, 1.f));
 
-	//m_cached_local_matrix *= glm::toMat4(glm::quat(glm::radians(m_rotation)));
+	// Rotation (quaternion):
+	m_cached_local_matrix *= glm::toMat4(m_rotation_quat);
 
 	// Scaling:
 	m_cached_local_matrix = glm::scale(m_cached_local_matrix, m_scale);
-	//m_cached_local_matrix = glm::inverse(m_cached_local_matrix);
 
 	// Compute 'global' matrix position relative to game scene:
 	//if (m_parent &&

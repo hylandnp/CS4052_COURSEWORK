@@ -96,7 +96,10 @@ NEIL HYLAND (11511677)
 
 		// Render game scene:
 		// TODO
-		node.rotateByY(100.f * static_cast<float>(delta_time));
+
+		//node.rotateByY(100.f * (float)delta_time);
+		//node.setRotationAsQuaternion(glm::quat(glm::radians(node.getRotationInEulerAngles() + glm::vec3(0.f, 100.f * (float)delta_time, 0.f))));
+		//std::cout << node.getRotationInEulerAngles().y << std::endl;
 
 		sha.setUniformAttribute("model_matrix", node.getCachedLocalMatrix());
 		sha.setUniformAttribute("view_matrix", view);
