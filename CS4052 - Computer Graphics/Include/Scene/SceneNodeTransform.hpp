@@ -7,7 +7,9 @@ NEIL HYLAND (11511677)
 
 #include <string>
 #include <vector>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
 // Forward declaration(s):
@@ -69,6 +71,11 @@ public:
 	void scaleBy(float p_uniform_offset);
 	void scaleBy(const glm::vec3& p_offset);
 
+	// Orientation setters(s):
+	//void setOrientation(float p_new_w, float p_new_x, float p_new_y, float p_new_z);
+	//void setOrientation(const glm::quat& p_orientation);
+	//void setOrientation(const glm::vec4& p_orientation);
+
 	// Translation getter(s):
 	float getPositionX();
 	float getPositionY();
@@ -87,6 +94,9 @@ public:
 	float getScaleZ();
 	const glm::vec3& getScale();
 
+	// Orientation getter(s):
+	//const glm::quat& getOrientation();
+
 	// Utility function(s):
 	void forceRebuildOfMatrices();
 
@@ -103,9 +113,10 @@ protected:
 	bool m_rebuild_matrices,
 		 m_transform_affects_children;
 
-	glm::vec3 m_location_values,
-			  m_rotation_values,
-			  m_scale_values;
+	glm::vec3 m_location,
+			  m_rotation,
+			  m_scale;
+	glm::quat m_orientation; // TODO
 	glm::mat4 m_cached_global_matrix,
 			  m_cached_local_matrix;
 

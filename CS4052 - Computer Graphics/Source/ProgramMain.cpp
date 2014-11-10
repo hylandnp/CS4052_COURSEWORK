@@ -96,6 +96,7 @@ NEIL HYLAND (11511677)
 
 		// Render game scene:
 		// TODO
+		node.rotateByY(100.f * static_cast<float>(delta_time));
 
 		sha.setUniformAttribute("model_matrix", node.getCachedLocalMatrix());
 		sha.setUniformAttribute("view_matrix", view);
