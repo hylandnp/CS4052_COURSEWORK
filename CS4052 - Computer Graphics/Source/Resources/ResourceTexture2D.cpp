@@ -36,7 +36,7 @@ bool ResourceTexture2D::load(ResourceImage& p_img_src, bool p_generate_mipmaps)
 	// Generate texture from software image data:
 	glTexImage2D(GL_TEXTURE_2D,
 				 0,
-				 GL_RGBA,
+				 GL_SRGB_ALPHA,
 				 m_width,
 				 m_height,
 				 0,

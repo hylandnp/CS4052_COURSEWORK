@@ -2,6 +2,7 @@
 CS4052 - Computer Graphics
 NEIL HYLAND (11511677)
 */
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 
@@ -16,6 +17,10 @@ NEIL HYLAND (11511677)
 #include "Resources/ResourceShader.hpp"
 #include "Resources/ResourceMeshStatic.hpp"
 #include "Scene/SceneNodeBase.hpp"
+#include "Scene/SceneNodeTransform.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 
 // Program entry point function:
@@ -44,44 +49,61 @@ NEIL HYLAND (11511677)
 	game_window->setActive(true);
 	game_window->setVsync(true);
 
-	// Setup framerate calculation:
-	double last_frame_time = glfwGetTime(),
-		   this_frame_time = 0.0,
-		   delta_time = 0.0;
-
 
 
 	ResourceTexture2D tex;
 	tex.loadFromFile("Assets/barrel.jpg", true);
 
 	ResourceShader sha;
-	sha.loadFromFile("Assets/default_texture_nolighting.vert.glsl",
-					 "Assets/default_texture_nolighting.frag.glsl");
+
+	sha.loadFromFile("Assets/phong_lighting.vert.glsl",
+					 "Assets/phong_lighting.frag.glsl");
 
 	ResourceMeshStatic mesh;
 	mesh.loadFromFile("Assets/barrel.obj");
 
 	sha.setActive(true);
-	sha.setUniformAttribute("texture_sampler", tex);
 	mesh.setActive(true, true);
 
-	SceneNodeBase node("Root", SceneNodeType::INVALID, nullptr);
-	node.addChild(new SceneNodeBase("Child1", SceneNodeType::INVALID, nullptr));
-	node.addChild(new SceneNodeBase("Child2", SceneNodeType::INVALID, nullptr));
-	node.getChild("Child2")->addChild(new SceneNodeBase("Child3", SceneNodeType::INVALID, nullptr));
-	node.getChild("Child2")->addChild(new SceneNodeBase("Child4", SceneNodeType::INVALID, nullptr));
+	glm::mat4 proj = glm::perspective(glm::radians(45.f), game_window->getWidth() / (float)game_window->getHeight(), 0.1f, 300.f);
+	glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 8.f), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
-	std::cout << node.countChildren(true) << std::endl;
-	std::cout << node.getTreeInfo() << std::endl;
+	SceneNodeTransform node("Test", nullptr);
+
+	//SceneNodeTransform node("Root", nullptr);
+	//node.addChild(new SceneNodeTransform("Child1", nullptr));
+	//node.addChild(new SceneNodeTransform("Child2", nullptr));
+	//node.getChild("Child2")->addChild(new SceneNodeTransform("Child3", nullptr));
+	//node.getChild("Child2")->addChild(new SceneNodeTransform("Child4", nullptr));
+
+	//std::cout << node.countChildren(true) << std::endl;
+	//std::cout << node.getTreeInfo() << std::endl;
+
+	// Setup framerate calculation:
+	double this_frame_time = glfwGetTime(),
+		   last_frame_time = this_frame_time,
+		   delta_time = 0.0;
 
 	// Enter main loop:
 	game_window->setVisible(true);
 	while (game_window->isOpen())
 	{
+		this_frame_time = glfwGetTime();
+		delta_time = this_frame_time - last_frame_time;
+		last_frame_time = this_frame_time;
+
 		if (!game_window->clear()) return EXIT_FAILURE;
 
 		// Render game scene:
 		// TODO
+
+		sha.setUniformAttribute("model_matrix", node.getCachedLocalMatrix());
+		sha.setUniformAttribute("view_matrix", view);
+		sha.setUniformAttribute("proj_matrix", proj);
+		sha.setUniformAttribute("texture_sampler", tex);
+
+		mesh.setActive(true);
+		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 
 		game_window->display();
 	}
@@ -89,7 +111,7 @@ NEIL HYLAND (11511677)
 	mesh.unLoad();
 	tex.unLoad();
 	sha.unLoad();
-	node.removeAllChildren();
+	//node.removeAllChildren();
 
 	// De-initialise game and dispose of managers:
 	Logger::getInstance().write("Exiting main function.");

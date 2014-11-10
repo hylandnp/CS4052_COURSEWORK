@@ -55,7 +55,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_GLU;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_GLU;GLM_FORCE_RADIANS;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalIncludeDirectories>$(ProjectDir)Libs\GLEW\include;$(ProjectDir)Libs\GLFW3\include;$(ProjectDir)Libs\GLM\include;$(ProjectDir)Libs\ASSIMP\include;$(ProjectDir)Libs\FREEIMAGE\include;Include;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -78,7 +78,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_GLU;NDEBUG;_WINDOWS;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_GLU;GLM_FORCE_RADIANS;NDEBUG;_WINDOWS;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <OpenMPSupport>true</OpenMPSupport>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -107,6 +107,7 @@
     <ClCompile Include="Source\Resources\ResourceShader.cpp" />
     <ClCompile Include="Source\Resources\ResourceTexture2D.cpp" />
     <ClCompile Include="Source\Scene\SceneNodeBase.cpp" />
+    <ClCompile Include="Source\Scene\SceneNodeTransform.cpp" />
     <ClCompile Include="Source\Utility\Logger.cpp" />
     <ClCompile Include="Source\Utility\OpenGLErrors.cpp" />
     <ClCompile Include="Source\Window.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Include\Resources\ResourceShader.hpp" />
     <ClInclude Include="Include\Resources\ResourceTexture2D.hpp" />
     <ClInclude Include="Include\Scene\SceneNodeBase.hpp" />
+    <ClInclude Include="Include\Scene\SceneNodeTransform.hpp" />
     <ClInclude Include="Include\Utility\Logger.hpp" />
     <ClInclude Include="Include\Utility\NonCopyable.hpp" />
     <ClInclude Include="Include\Utility\OpenGLErrors.hpp" />

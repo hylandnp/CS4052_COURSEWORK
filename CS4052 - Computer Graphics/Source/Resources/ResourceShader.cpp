@@ -307,7 +307,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",
@@ -327,7 +327,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",
@@ -348,7 +348,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",
@@ -368,7 +368,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",
@@ -388,7 +388,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",
@@ -408,7 +408,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",
@@ -428,7 +428,7 @@ bool ResourceShader::setUniformAttribute(const std::string& p_uniform_str,
 {
 	auto location = this->getUniformLocation(p_uniform_str);
 
-	if (location < 0)
+	if (location == -1)
 	{
 		Logger::getInstance().writeError("ResourceShader.cpp",
 										 "setUniformAttribute()",

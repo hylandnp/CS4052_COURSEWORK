@@ -11,7 +11,7 @@ out vec4 frag_colour;
 
 uniform sampler2D texture_sampler;
 
-
+// Shader entry point:
 void main()
 {
 	frag_colour = texture2D(texture_sampler, uv_from_vertex);

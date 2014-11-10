@@ -140,7 +140,13 @@ const std::string& SceneNodeBase::getName()
 
 bool SceneNodeBase::isRootNode()
 {
-	return (m_parent == nullptr);
+	return (m_parent == nullptr && m_type == SceneNodeType::TRANSFORM);
+}
+
+
+SceneNodeType SceneNodeBase::getType()
+{
+	return m_type;
 }
 
 
@@ -170,19 +176,19 @@ std::string SceneNodeBase::getTreeInfo(unsigned int p_depth)
 	// Conver type to string:
 	switch (m_type)
 	{
-		case SceneNodeType::TRANSFORMATION:
+		case SceneNodeType::TRANSFORM:
 		{
-			info_str += "Transformation";
+			info_str += "Transformation Only";
 			break;
 		}
 		case SceneNodeType::CAMERA:
 		{
-			info_str += "Camera";
+			info_str += "Virtual Camera";
 			break;
 		}
 		case SceneNodeType::MESH_STATIC:
 		{
-			info_str += "Mesh (Static)";
+			info_str += "Simple (Static) Mesh";
 			break;
 		}
 		default:

@@ -16,9 +16,12 @@ Enumerated node types:
 enum class SceneNodeType : unsigned char
 {
 	INVALID = 0,
-	TRANSFORMATION,
+	TRANSFORM,
 	CAMERA,
-	MESH_STATIC
+	DIRECTIONAL_LIGHT,
+	POINT_LIGHT,
+	SPOTLIGHT,
+	MESH_STATIC,
 };
 
 
@@ -36,7 +39,7 @@ public:
 				  SceneNodeBase* p_parent = nullptr);
 	virtual ~SceneNodeBase();
 
-	// Main inheritable functions:
+	// Main inheritable function(s):
 	virtual bool updateAndRender(const SceneNodeCamera* p_active_camera);
 
 	// Parent function(s):
@@ -53,6 +56,7 @@ public:
 	// Node info getter(s) :
 	const std::string& getName();
 	bool isRootNode();
+	SceneNodeType getType();
 	std::size_t countChildren(bool p_recursive = false);
 
 	// Debug info function(s):

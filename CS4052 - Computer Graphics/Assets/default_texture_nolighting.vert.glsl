@@ -13,7 +13,7 @@ out vec2 uv_from_vertex;
 
 uniform mat4 mvp_matrix;
 
-
+// Shader entry point:
 void main()
 {
 	uv_from_vertex = uv_coord;

@@ -4,6 +4,7 @@ NEIL HYLAND (11511677)
 */
 #pragma once
 #include "Utility/Singleton.hpp"
+#include "Utility/NonCopyable.hpp"
 
 #include <string>
 #include <iosfwd>
@@ -17,7 +18,7 @@ NEIL HYLAND (11511677)
 File logging class.
 Utility class used to output debugging messages to a file.
 */
-class _Logger
+class _Logger : public NonCopyable
 {
 public:
 	// Constuctor/destructor:

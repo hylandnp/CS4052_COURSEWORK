@@ -45,6 +45,9 @@
     <ClCompile Include="Source\Scene\SceneNodeBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\SceneNodeTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Utility\Logger.hpp">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Scene\SceneNodeBase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scene\SceneNodeTransform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
