@@ -216,3 +216,9 @@ std::string SceneNodeBase::moreNodeInfo()
 {
 	return std::string();
 }
+
+
+void SceneNodeBase::setType(SceneNodeType p_new_type)
+{
+	m_type = p_new_type;
+}

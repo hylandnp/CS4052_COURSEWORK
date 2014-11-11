@@ -141,6 +141,8 @@ bool Window::create(std::size_t p_width,
 								glGetString(GL_VERSION),
 								glGetString(GL_RENDERER));
 
+	glfwSwapInterval(1);
+
 	// Configure OpenGL:
 	glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 	glClearDepth(1.0);
@@ -152,9 +154,9 @@ bool Window::create(std::size_t p_width,
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);

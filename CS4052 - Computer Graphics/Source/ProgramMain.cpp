@@ -18,6 +18,7 @@ NEIL HYLAND (11511677)
 #include "Resources/ResourceMeshStatic.hpp"
 #include "Scene/SceneNodeBase.hpp"
 #include "Scene/SceneNodeTransform.hpp"
+#include "Scene/SceneNodeCamera.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -47,7 +48,7 @@ NEIL HYLAND (11511677)
 
 	if (!game_window->create()) return EXIT_FAILURE;
 	game_window->setActive(true);
-	game_window->setVsync(true);
+	game_window->setVsync(false);
 
 
 
@@ -68,7 +69,15 @@ NEIL HYLAND (11511677)
 	glm::mat4 proj = glm::perspective(glm::radians(45.f), game_window->getWidth() / (float)game_window->getHeight(), 0.1f, 300.f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 8.f), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
-	SceneNodeTransform node("Test", nullptr);
+	SceneNodeCamera camera("Camera");
+	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
+	camera.setPosition(0.f, 0.f, -8.f);
+	//camera.lookAt(glm::vec3(0.f));
+
+	SceneNodeTransform node("TestTransform", nullptr);
+	node.setPosition(0.f, 0.f, 0.f);
+
+	//std::cout << (int)(view == camera.getCachedGlobalMatrix()) << std::endl;
 
 	//SceneNodeTransform node("Root", nullptr);
 	//node.addChild(new SceneNodeTransform("Child1", nullptr));
@@ -97,13 +106,14 @@ NEIL HYLAND (11511677)
 		// Render game scene:
 		// TODO
 
-		//node.rotateByY(100.f * (float)delta_time);
+		node.rotateByY(20.f * static_cast<float>(delta_time));
+		//camera.moveByX(0.2f * (float)delta_time);
 		//node.setRotationAsQuaternion(glm::quat(glm::radians(node.getRotationInEulerAngles() + glm::vec3(0.f, 100.f * (float)delta_time, 0.f))));
 		//std::cout << node.getRotationInEulerAngles().y << std::endl;
 
-		sha.setUniformAttribute("model_matrix", node.getCachedLocalMatrix());
-		sha.setUniformAttribute("view_matrix", view);
-		sha.setUniformAttribute("proj_matrix", proj);
+		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
+		sha.setUniformAttribute("view_matrix", camera.getCachedGlobalMatrix());
+		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
 		sha.setUniformAttribute("texture_sampler", tex);
 
 		mesh.setActive(true);

@@ -17,7 +17,8 @@ class SceneNodeCamera;
 
 
 /*
-// TODO
+Scene transformation node.
+This class encapsulates scene transformation matrices.
 */
 class SceneNodeTransform : public SceneNodeBase
 {

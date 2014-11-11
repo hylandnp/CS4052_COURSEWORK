@@ -71,4 +71,5 @@ protected:
 
 	// Internal inheritable debug info:
 	virtual std::string moreNodeInfo();
+	void setType(SceneNodeType p_new_type);
 };

@@ -445,7 +445,9 @@ void SceneNodeTransform::lookAt(float p_target_x,
 								float p_target_z,
 								const glm::vec3& p_up)
 {
-	m_rotation_quat = glm::quat_cast(glm::lookAt(m_location, glm::vec3(p_target_x, p_target_y, p_target_z), p_up));
+	m_rotation_quat = glm::quat_cast(glm::lookAt(m_location,
+												 glm::vec3(p_target_x, p_target_y, p_target_z),
+												 p_up));
 
 	m_rotation_euler = glm::degrees(glm::eulerAngles(m_rotation_quat));
 	m_rotation_euler.x = fmod(m_rotation_euler.x, 360.f);
@@ -462,7 +464,9 @@ void SceneNodeTransform::lookAt(float p_target_x,
 void SceneNodeTransform::lookAt(const glm::vec3& p_target,
 								const glm::vec3& p_up)
 {
-	m_rotation_quat = glm::quat_cast(glm::lookAt(m_location, p_target, p_up));
+	m_rotation_quat = glm::quat_cast(glm::lookAt(m_location,
+												 p_target,
+												 p_up));
 
 	m_rotation_euler = glm::degrees(glm::eulerAngles(m_rotation_quat));
 	m_rotation_euler.x = fmod(m_rotation_euler.x, 360.f);
