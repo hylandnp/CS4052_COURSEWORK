@@ -48,7 +48,7 @@ NEIL HYLAND (11511677)
 
 	if (!game_window->create()) return EXIT_FAILURE;
 	game_window->setActive(true);
-	game_window->setVsync(false);
+	game_window->setVsync(true);
 
 
 
@@ -195,6 +195,7 @@ NEIL HYLAND (11511677)
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 
 		game_window->display();
+		glFinish();
 	}
 
 	mesh.unLoad();
