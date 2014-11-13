@@ -29,7 +29,7 @@ void SceneNodeCamera::updateAndRender(SceneNodeCamera* p_active_camera)
 {
 	// TODO
 
-	SceneNodeBase::updateAndRender(p_active_camera);
+	SceneNodeTransform::updateAndRender(p_active_camera);
 }
 
 

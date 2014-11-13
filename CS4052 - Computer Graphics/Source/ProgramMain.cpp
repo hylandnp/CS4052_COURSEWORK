@@ -48,7 +48,7 @@ NEIL HYLAND (11511677)
 
 	if (!game_window->create()) return EXIT_FAILURE;
 	game_window->setActive(true);
-	game_window->setVsync(true);
+	game_window->setVsync(false);
 
 
 
@@ -103,10 +103,44 @@ NEIL HYLAND (11511677)
 
 		if (!game_window->clear()) return EXIT_FAILURE;
 
+		// Check for keyboard input:
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_LEFT) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_LEFT) == GLFW_REPEAT)
+		{
+			camera.moveByX(5.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_RIGHT) == GLFW_PRESS ||
+				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_RIGHT) == GLFW_REPEAT)
+		{
+			camera.moveByX(-5.f * static_cast<float>(delta_time));
+		}
+
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_UP) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN) == GLFW_REPEAT)
+		{
+			camera.moveByZ(5.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN) == GLFW_REPEAT)
+		{
+			camera.moveByZ(-5.f * static_cast<float>(delta_time));
+		}
+
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_UP) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_UP) == GLFW_REPEAT)
+		{
+			camera.moveByY(-5.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_REPEAT)
+		{
+			camera.moveByY(5.f * static_cast<float>(delta_time));
+		}
+
 		// Render game scene:
 		// TODO
 
-		node.rotateByY(20.f * static_cast<float>(delta_time));
+		//node.rotateByY(20.f * static_cast<float>(delta_time));
 		//camera.moveByX(0.2f * (float)delta_time);
 		//node.setRotationAsQuaternion(glm::quat(glm::radians(node.getRotationInEulerAngles() + glm::vec3(0.f, 100.f * (float)delta_time, 0.f))));
 		//std::cout << node.getRotationInEulerAngles().y << std::endl;
