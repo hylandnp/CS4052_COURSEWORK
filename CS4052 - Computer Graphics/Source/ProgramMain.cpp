@@ -66,8 +66,8 @@ NEIL HYLAND (11511677)
 	sha.setActive(true);
 	mesh.setActive(true, true);
 
-	glm::mat4 proj = glm::perspective(glm::radians(45.f), game_window->getWidth() / (float)game_window->getHeight(), 0.1f, 300.f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 8.f), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
+	//glm::mat4 proj = glm::perspective(glm::radians(45.f), game_window->getWidth() / (float)game_window->getHeight(), 0.1f, 300.f);
+	//glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 8.f), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
@@ -76,6 +76,14 @@ NEIL HYLAND (11511677)
 
 	SceneNodeTransform node("TestTransform", nullptr);
 	node.setPosition(0.f, 0.f, 0.f);
+
+	SceneNodeTransform node2("TestChildTransform1", nullptr);
+	node2.setPosition(3.f, 0.f, 0.f);
+	node2.setScale(0.5f, 0.5f, 0.5f);
+
+	SceneNodeTransform node3("TestChildTransform2", nullptr);
+	node3.setPosition(-3.f, 0.f, 0.f);
+	node3.setScale(0.5f, 0.5f, 0.5f);
 
 	//std::cout << (int)(view == camera.getCachedGlobalMatrix()) << std::endl;
 
@@ -140,16 +148,27 @@ NEIL HYLAND (11511677)
 		// Render game scene:
 		// TODO
 
-		//node.rotateByY(20.f * static_cast<float>(delta_time));
+		node.rotateByY(20.f * static_cast<float>(delta_time));
+		node2.rotateByX(25.f * static_cast<float>(delta_time));
+		node3.rotateByX(-25.f * static_cast<float>(delta_time));
+
 		//camera.moveByX(0.2f * (float)delta_time);
 		//node.setRotationAsQuaternion(glm::quat(glm::radians(node.getRotationInEulerAngles() + glm::vec3(0.f, 100.f * (float)delta_time, 0.f))));
 		//std::cout << node.getRotationInEulerAngles().y << std::endl;
 
-		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
 		sha.setUniformAttribute("view_matrix", camera.getCachedGlobalMatrix());
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
 		sha.setUniformAttribute("texture_sampler", tex);
 
+		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
+		mesh.setActive(true);
+		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+
+		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix() * node2.getCachedGlobalMatrix());
+		mesh.setActive(true);
+		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+
+		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix() * node3.getCachedGlobalMatrix());
 		mesh.setActive(true);
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 
