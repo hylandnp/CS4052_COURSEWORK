@@ -40,12 +40,11 @@ void SceneNodeCamera::setPerspective(float p_fov,
 									 float p_far)
 {
 	m_is_ortho = false;
-
-	float ratio = static_cast<float>(p_width) / static_cast<float>(p_height);
-	m_proj_perspective = glm::perspective(glm::radians(p_fov),
-										  ratio,
-										  p_near,
-										  p_far);
+	m_proj_perspective = glm::perspectiveFov(glm::radians(p_fov),
+											 static_cast<float>(p_width),
+											 static_cast<float>(p_height),
+											 p_near,
+											 p_far);
 }
 
 

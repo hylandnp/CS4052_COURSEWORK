@@ -72,7 +72,6 @@ NEIL HYLAND (11511677)
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
 	camera.setPosition(0.f, 0.f, -8.f);
-	//camera.lookAt(glm::vec3(0.f));
 
 	SceneNodeTransform node("TestTransform", nullptr);
 	node.setPosition(0.f, 0.f, 0.f);
@@ -140,9 +139,32 @@ NEIL HYLAND (11511677)
 			camera.moveByY(-5.f * static_cast<float>(delta_time));
 		}
 		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_PRESS ||
-			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_REPEAT)
+				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_REPEAT)
 		{
 			camera.moveByY(5.f * static_cast<float>(delta_time));
+		}
+
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_REPEAT)
+		{
+			camera.rotateByX(30.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_PRESS ||
+				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_REPEAT)
+		{
+			camera.rotateByX(-30.f * static_cast<float>(delta_time));
+		}
+
+		// Test:
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_REPEAT)
+		{
+			camera.rotateByY(30.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_PRESS ||
+				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_REPEAT)
+		{
+			camera.rotateByY(-30.f * static_cast<float>(delta_time));
 		}
 
 		// Render game scene:
