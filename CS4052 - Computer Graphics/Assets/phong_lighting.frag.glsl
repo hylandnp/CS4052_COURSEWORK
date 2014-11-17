@@ -35,7 +35,7 @@ vec3 light_ambient_colour = vec3 (0.2, 0.2, 0.2); // grey ambient colour
 vec3 surface_specular_reflect = vec3 (1.0, 1.0, 1.0); // fully reflect specular light
 vec3 surface_diffuse_reflect = vec3 (1.0, 0.5, 0.0); // orange diffuse surface reflectance
 vec3 surface_ambient_reflect = vec3 (1.0, 1.0, 1.0); // fully reflect ambient light
-float specular_exponent = 100.0; // specular 'power'
+float specular_exponent = 200.0; // specular 'power'
 
 
 // Shader entry point:
@@ -54,14 +54,11 @@ void main()
 	vec3 ambient_intensity = light_ambient_colour * surface_ambient_reflect;
 
 	// Specular intensity (with Blinn-Phong):
-	//vec3 reflection_eye = reflect(-direction_to_light_eye, normal_eye);
 	vec3 surface_to_viewer_eye = normalize(-position_eye);
-	
 	float specular_factor = pow(max(dot(normalize(surface_to_viewer_eye + direction_to_light_eye), normal_eye), 0.0), specular_exponent);
-	//float specular_factor = pow(max(dot(reflection_eye, surface_to_viewer_eye), 0.0), specular_exponent);
-
+	
 	vec3 specular_intensity = light_specular_colour * surface_specular_reflect * specular_factor;
 
-	//frag_colour = texture2D(texture_sampler, uv_from_vertex);
+	// Output final colour:
 	frag_colour = texture2D(texture_sampler, uv_from_vertex) * vec4(specular_intensity + diffuse_intensity + ambient_intensity, 1.0);
 }

@@ -11,13 +11,16 @@ class SceneNodeCamera;
 
 
 /*
-Enumerated node types:
+Enumerated node types.
+This lists all the potential node types used by the scene graph.
 */
 enum class SceneNodeType : unsigned char
 {
 	INVALID = 0,
 	TRANSFORM,
 	CAMERA,
+
+	// TODO nodes:
 	DIRECTIONAL_LIGHT,
 	POINT_LIGHT,
 	SPOTLIGHT,

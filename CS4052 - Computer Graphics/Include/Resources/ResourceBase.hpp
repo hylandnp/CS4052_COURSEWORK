@@ -15,11 +15,8 @@ enum class ResourceType : unsigned char
 	INVALID = 0,
 	IMAGE,
 	TEXTURE_2D,
-	TEXTURE_3D,
-	TEXTURE_CUBEMAP,
 	SHADER,
 	MESH_STATIC,
-	MESH_DYNAMIC
 };
 
 

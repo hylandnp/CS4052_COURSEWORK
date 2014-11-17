@@ -8,6 +8,10 @@ NEIL HYLAND (11511677)
 #include <glm/mat4x4.hpp>
 
 
+/*
+Virtual camera node.
+This class encapsulates scene transformation matrices and additional camera matrices.
+*/
 class SceneNodeCamera : public SceneNodeTransform
 {
 public:

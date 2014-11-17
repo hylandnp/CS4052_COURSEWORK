@@ -50,8 +50,7 @@ NEIL HYLAND (11511677)
 	game_window->setActive(true);
 	game_window->setVsync(true);
 
-
-
+	// Load/setup game resources:
 	ResourceTexture2D tex;
 	tex.loadFromFile("Assets/barrel.jpg", true);
 
@@ -65,9 +64,6 @@ NEIL HYLAND (11511677)
 
 	sha.setActive(true);
 	mesh.setActive(true, true);
-
-	//glm::mat4 proj = glm::perspective(glm::radians(45.f), game_window->getWidth() / (float)game_window->getHeight(), 0.1f, 300.f);
-	//glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 8.f), glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
@@ -83,17 +79,6 @@ NEIL HYLAND (11511677)
 	SceneNodeTransform node3("TestChildTransform2", nullptr);
 	node3.setPosition(-3.f, 0.f, 0.f);
 	node3.setScale(0.5f, 0.5f, 0.5f);
-
-	//std::cout << (int)(view == camera.getCachedGlobalMatrix()) << std::endl;
-
-	//SceneNodeTransform node("Root", nullptr);
-	//node.addChild(new SceneNodeTransform("Child1", nullptr));
-	//node.addChild(new SceneNodeTransform("Child2", nullptr));
-	//node.getChild("Child2")->addChild(new SceneNodeTransform("Child3", nullptr));
-	//node.getChild("Child2")->addChild(new SceneNodeTransform("Child4", nullptr));
-
-	//std::cout << node.countChildren(true) << std::endl;
-	//std::cout << node.getTreeInfo() << std::endl;
 
 	// Setup framerate calculation:
 	double this_frame_time = glfwGetTime(),
@@ -168,19 +153,13 @@ NEIL HYLAND (11511677)
 		}
 
 		// Render game scene:
-		// TODO
-
 		node.rotateByY(20.f * static_cast<float>(delta_time));
 		node2.rotateByX(25.f * static_cast<float>(delta_time));
 		node3.rotateByX(-25.f * static_cast<float>(delta_time));
 
-		//camera.moveByX(0.2f * (float)delta_time);
-		//node.setRotationAsQuaternion(glm::quat(glm::radians(node.getRotationInEulerAngles() + glm::vec3(0.f, 100.f * (float)delta_time, 0.f))));
-		//std::cout << node.getRotationInEulerAngles().y << std::endl;
-
 		sha.setUniformAttribute("view_matrix", camera.getCachedGlobalMatrix());
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
-		//sha.setUniformAttribute("texture_sampler", tex);
+		sha.setUniformAttribute("texture_sampler", tex);
 
 		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
 		mesh.setActive(true);
@@ -194,13 +173,13 @@ NEIL HYLAND (11511677)
 		mesh.setActive(true);
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 
+		// Swap window buffers:
 		game_window->display();
 	}
 
 	mesh.unLoad();
 	tex.unLoad();
 	sha.unLoad();
-	//node.removeAllChildren();
 
 	// De-initialise game and dispose of managers:
 	Logger::getInstance().write("Exiting main function.");
