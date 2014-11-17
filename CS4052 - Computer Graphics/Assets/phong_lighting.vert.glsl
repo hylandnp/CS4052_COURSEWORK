@@ -2,7 +2,7 @@
 CS4052 - Computer Graphics
 NEIL HYLAND (11511677)
 
-GLSL vertex shader implementing Phong lighting model.
+GLSL vertex shader implementing Phong lighting model (with Blinn-Phong specular power calculation).
 Based off of provided examples.
 */
 #version 400
@@ -15,8 +15,7 @@ layout(location = 2) in vec2 uv_coord;
 
 // Output attributes:
 out vec2 uv_from_vertex;
-out vec3 normal_from_vertex,
-		 position_eye,
+out vec3 position_eye,
 		 normal_eye;
 
 
@@ -30,10 +29,9 @@ uniform mat4 model_matrix,
 void main()
 {
 	uv_from_vertex = uv_coord;
-	normal_from_vertex = vertex_normal;
 
 	position_eye = vec3(view_matrix * model_matrix * vec4(vertex_point, 1.0));
-	normal_eye = vec3(view_matrix * model_matrix * vec4(vertex_point, 0.0));
+	normal_eye = vec3(view_matrix * model_matrix * vec4(vertex_normal, 0.0));
 
 	gl_Position = proj_matrix * vec4(position_eye, 1.0);
 }

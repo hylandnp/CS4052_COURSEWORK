@@ -180,7 +180,7 @@ NEIL HYLAND (11511677)
 
 		sha.setUniformAttribute("view_matrix", camera.getCachedGlobalMatrix());
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
-		sha.setUniformAttribute("texture_sampler", tex);
+		//sha.setUniformAttribute("texture_sampler", tex);
 
 		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
 		mesh.setActive(true);
