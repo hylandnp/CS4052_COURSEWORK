@@ -235,6 +235,7 @@ void Window::display()
 		// Render buffer to screen:
 		glfwMakeContextCurrent(m_glfw_handle);
 		glfwSwapBuffers(m_glfw_handle);
+		glFlush();
 
 		// Dispatch any window events:
 		glfwPollEvents();

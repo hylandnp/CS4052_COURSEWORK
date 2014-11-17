@@ -195,7 +195,6 @@ NEIL HYLAND (11511677)
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 
 		game_window->display();
-		glFlush();
 	}
 
 	mesh.unLoad();
