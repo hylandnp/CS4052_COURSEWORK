@@ -67,7 +67,7 @@ NEIL HYLAND (11511677)
 
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
-	camera.setPosition(0.f, 0.f, -8.f);
+	camera.setPosition(0.f, 0.f, 8.f);
 
 	SceneNodeTransform node("TestTransform", nullptr);
 	node.setPosition(0.f, 0.f, 0.f);
@@ -79,6 +79,12 @@ NEIL HYLAND (11511677)
 	SceneNodeTransform node3("TestChildTransform2", nullptr);
 	node3.setPosition(-3.f, 0.f, 0.f);
 	node3.setScale(0.5f, 0.5f, 0.5f);
+	
+	SceneNodeTransform node4("TestTransform2", nullptr);
+	node4.setPosition(4.f, 0.f, -4.f);
+
+	SceneNodeTransform node5("TestTransform3", nullptr);
+	node5.setPosition(-4.f, 0.f, 4.f);
 
 	// Setup framerate calculation:
 	double this_frame_time = glfwGetTime(),
@@ -96,60 +102,61 @@ NEIL HYLAND (11511677)
 		if (!game_window->clear()) return EXIT_FAILURE;
 
 		// Check for keyboard input:
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_REPEAT)
+		{
+			camera.rotateByX(-30.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_REPEAT)
+		{
+			camera.rotateByX(30.f * static_cast<float>(delta_time));
+		}
+
+		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_REPEAT)
+		{
+			camera.rotateByY(-30.f * static_cast<float>(delta_time));
+		}
+		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_PRESS ||
+			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_REPEAT)
+		{
+			camera.rotateByY(30.f * static_cast<float>(delta_time));
+		}
+
+		auto move_amount = 5.f * static_cast<float>(delta_time);
+
 		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_LEFT) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_LEFT) == GLFW_REPEAT)
 		{
-			camera.moveByX(5.f * static_cast<float>(delta_time));
+			camera.moveByX(-move_amount);
 		}
 		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_RIGHT) == GLFW_PRESS ||
 				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_RIGHT) == GLFW_REPEAT)
 		{
-			camera.moveByX(-5.f * static_cast<float>(delta_time));
+			camera.moveByX(move_amount);
 		}
 
 		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_UP) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN) == GLFW_REPEAT)
 		{
-			camera.moveByZ(5.f * static_cast<float>(delta_time));
+			camera.moveByZ(-move_amount);
 		}
 		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN) == GLFW_REPEAT)
 		{
-			camera.moveByZ(-5.f * static_cast<float>(delta_time));
+			camera.moveByZ(move_amount);
 		}
 
 		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_UP) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_UP) == GLFW_REPEAT)
 		{
-			camera.moveByY(-5.f * static_cast<float>(delta_time));
+			camera.moveByY(move_amount);
 		}
 		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_PRESS ||
 				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_PAGE_DOWN) == GLFW_REPEAT)
 		{
-			camera.moveByY(5.f * static_cast<float>(delta_time));
-		}
-
-		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_PRESS ||
-			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_REPEAT)
-		{
-			camera.rotateByX(30.f * static_cast<float>(delta_time));
-		}
-		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_PRESS ||
-				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_REPEAT)
-		{
-			camera.rotateByX(-30.f * static_cast<float>(delta_time));
-		}
-
-		// Test:
-		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_PRESS ||
-			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_REPEAT)
-		{
-			camera.rotateByY(30.f * static_cast<float>(delta_time));
-		}
-		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_PRESS ||
-				 glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_REPEAT)
-		{
-			camera.rotateByY(-30.f * static_cast<float>(delta_time));
+			camera.moveByY(-move_amount);
 		}
 
 		// Render game scene:
@@ -157,7 +164,7 @@ NEIL HYLAND (11511677)
 		node2.rotateByX(25.f * static_cast<float>(delta_time));
 		node3.rotateByX(-25.f * static_cast<float>(delta_time));
 
-		sha.setUniformAttribute("view_matrix", camera.getCachedGlobalMatrix());
+		sha.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
 		sha.setUniformAttribute("texture_sampler", tex);
 
@@ -170,6 +177,14 @@ NEIL HYLAND (11511677)
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 
 		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix() * node3.getCachedGlobalMatrix());
+		mesh.setActive(true);
+		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+
+		sha.setUniformAttribute("model_matrix", node4.getCachedGlobalMatrix());
+		mesh.setActive(true);
+		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+
+		sha.setUniformAttribute("model_matrix", node5.getCachedGlobalMatrix());
 		mesh.setActive(true);
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
 

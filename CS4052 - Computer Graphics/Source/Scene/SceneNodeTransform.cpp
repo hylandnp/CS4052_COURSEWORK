@@ -514,22 +514,11 @@ const glm::mat4& SceneNodeTransform::getCachedLocalMatrix()
 
 void SceneNodeTransform::rebuildMatrix()
 {
-	// Translation:
-	m_cached_local_matrix = glm::translate(m_location);
-
-	// Rotation (old):
-	//m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
-	//									glm::radians(m_rotation_euler.x),
-	//									glm::vec3(1.f, 0.f, 0.f));
-	//m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
-	//									glm::radians(m_rotation_euler.y),
-	//									glm::vec3(0.f, 1.f, 0.f));
-	//m_cached_local_matrix = glm::rotate(m_cached_local_matrix,
-	//									glm::radians(m_rotation_euler.z),
-	//									glm::vec3(0.f, 0.f, 1.f));
-
 	// Rotation (quaternion):
-	m_cached_local_matrix *= glm::toMat4(m_rotation_quat);
+	m_cached_local_matrix = glm::toMat4(m_rotation_quat);
+
+	// Translation:
+	m_cached_local_matrix = glm::translate(m_cached_local_matrix, m_location);
 
 	// Scaling:
 	m_cached_local_matrix = glm::scale(m_cached_local_matrix, m_scale);
