@@ -60,5 +60,5 @@ void main()
 	vec3 specular_intensity = light_specular_colour * surface_specular_reflect * specular_factor;
 
 	// Output final colour:
-	frag_colour = texture2D(texture_sampler, uv_from_vertex) * vec4(specular_intensity + diffuse_intensity + ambient_intensity, 1.0);
+	frag_colour = vec4(1.0) * vec4(specular_intensity + diffuse_intensity + ambient_intensity, 1.0);
 }

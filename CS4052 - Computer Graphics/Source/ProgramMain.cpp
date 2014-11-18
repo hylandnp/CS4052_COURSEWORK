@@ -54,13 +54,18 @@ NEIL HYLAND (11511677)
 	ResourceTexture2D tex;
 	tex.loadFromFile("Assets/barrel.jpg", true);
 
-	ResourceShader sha;
+	ResourceShader sha,
+				   sha2;
 
 	sha.loadFromFile("Assets/phong_lighting.vert.glsl",
 					 "Assets/phong_lighting.frag.glsl");
+	sha2.loadFromFile("Assets/phong_lighting.vert.glsl",
+					  "Assets/phong_lighting_notexture.frag.glsl");
 
-	ResourceMeshStatic mesh;
+	ResourceMeshStatic mesh,
+					   stage;
 	mesh.loadFromFile("Assets/barrel.obj");
+	stage.loadFromFile("Assets/stage.obj");
 
 	sha.setActive(true);
 	mesh.setActive(true, true);
@@ -81,10 +86,14 @@ NEIL HYLAND (11511677)
 	node3.setScale(0.5f, 0.5f, 0.5f);
 	
 	SceneNodeTransform node4("TestTransform2", nullptr);
-	node4.setPosition(4.f, 0.f, -4.f);
+	node4.setPosition(-3.5f, -1.1f, 3.5f);
 
 	SceneNodeTransform node5("TestTransform3", nullptr);
-	node5.setPosition(-4.f, 0.f, 4.f);
+	node5.setPosition(3.5f, -1.1f, -3.5f);
+
+	SceneNodeTransform node6("GroundTransform", nullptr);
+	node6.setPosition(0.f, -3.2f, 0.f);
+	node6.setRotationY(90.f);
 
 	// Setup framerate calculation:
 	double this_frame_time = glfwGetTime(),
@@ -105,23 +114,23 @@ NEIL HYLAND (11511677)
 		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_REPEAT)
 		{
-			camera.rotateByX(-30.f * static_cast<float>(delta_time));
+			camera.rotateByX(30.f * static_cast<float>(delta_time));
 		}
 		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_S) == GLFW_REPEAT)
 		{
-			camera.rotateByX(30.f * static_cast<float>(delta_time));
+			camera.rotateByX(-30.f * static_cast<float>(delta_time));
 		}
 
 		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_REPEAT)
 		{
-			camera.rotateByY(-30.f * static_cast<float>(delta_time));
+			camera.rotateByY(30.f * static_cast<float>(delta_time));
 		}
 		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_PRESS ||
 			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_REPEAT)
 		{
-			camera.rotateByY(30.f * static_cast<float>(delta_time));
+			camera.rotateByY(-30.f * static_cast<float>(delta_time));
 		}
 
 		auto move_amount = 5.f * static_cast<float>(delta_time);
@@ -164,10 +173,16 @@ NEIL HYLAND (11511677)
 		node2.rotateByX(25.f * static_cast<float>(delta_time));
 		node3.rotateByX(-25.f * static_cast<float>(delta_time));
 
+		sha.setActive(true);
 		sha.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
 		sha.setUniformAttribute("texture_sampler", tex);
 
+		sha2.setActive(true);
+		sha2.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
+		sha2.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
+
+		sha.setActive(true);
 		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
 		mesh.setActive(true);
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
@@ -187,6 +202,11 @@ NEIL HYLAND (11511677)
 		sha.setUniformAttribute("model_matrix", node5.getCachedGlobalMatrix());
 		mesh.setActive(true);
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+
+		sha2.setActive(true);
+		sha2.setUniformAttribute("model_matrix", node6.getCachedGlobalMatrix());
+		stage.setActive(true);
+		glDrawArrays(GL_TRIANGLES, 0, stage.getVertexCount());
 
 		// Swap window buffers:
 		game_window->display();

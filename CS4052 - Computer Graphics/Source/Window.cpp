@@ -154,9 +154,9 @@ bool Window::create(std::size_t p_width,
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
