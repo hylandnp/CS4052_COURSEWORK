@@ -62,38 +62,24 @@ NEIL HYLAND (11511677)
 	sha2.loadFromFile("Assets/phong_lighting.vert.glsl",
 					  "Assets/phong_lighting_notexture.frag.glsl");
 
-	ResourceMeshStatic mesh,
-					   stage;
-	mesh.loadFromFile("Assets/barrel.obj");
-	stage.loadFromFile("Assets/stage.obj");
+	ResourceMeshStatic barrel_mesh,
+					   launch_ramp_mesh;
+	barrel_mesh.loadFromFile("Assets/barrel2.obj");
+	launch_ramp_mesh.loadFromFile("Assets/launch_ramp.obj");
 
 	sha.setActive(true);
-	mesh.setActive(true, true);
+	barrel_mesh.setActive(true, true);
 
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
-	camera.setPosition(0.f, 0.f, 8.f);
+	camera.setPosition(0.f, 1.5f, 4.f);
+	//camera.setRotationX(-45.f);
 
-	SceneNodeTransform node("TestTransform", nullptr);
-	node.setPosition(0.f, 0.f, 0.f);
+	SceneNodeTransform barrel_transform("TestTransform", nullptr);
+	barrel_transform.setPosition(0.f, 0.9f, 1.4f);
 
-	SceneNodeTransform node2("TestChildTransform1", nullptr);
-	node2.setPosition(3.f, 0.f, 0.f);
-	node2.setScale(0.5f, 0.5f, 0.5f);
-
-	SceneNodeTransform node3("TestChildTransform2", nullptr);
-	node3.setPosition(-3.f, 0.f, 0.f);
-	node3.setScale(0.5f, 0.5f, 0.5f);
-	
-	SceneNodeTransform node4("TestTransform2", nullptr);
-	node4.setPosition(-3.5f, -1.1f, 3.5f);
-
-	SceneNodeTransform node5("TestTransform3", nullptr);
-	node5.setPosition(3.5f, -1.1f, -3.5f);
-
-	SceneNodeTransform node6("GroundTransform", nullptr);
-	node6.setPosition(0.f, -3.2f, 0.f);
-	node6.setRotationY(90.f);
+	SceneNodeTransform launch_ramp_transform("TestChildTransform1", nullptr);
+	launch_ramp_transform.setPosition(0.f, 0.f, 0.f);
 
 	// Setup framerate calculation:
 	double this_frame_time = glfwGetTime(),
@@ -168,51 +154,32 @@ NEIL HYLAND (11511677)
 			camera.moveByY(-move_amount);
 		}
 
-		// Render game scene:
-		node.rotateByY(20.f * static_cast<float>(delta_time));
-		node2.rotateByX(25.f * static_cast<float>(delta_time));
-		node3.rotateByX(-25.f * static_cast<float>(delta_time));
-
+		// Pass camera matrices to shader(s):
 		sha.setActive(true);
 		sha.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
-		sha.setUniformAttribute("texture_sampler", tex);
 
 		sha2.setActive(true);
 		sha2.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
 		sha2.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
 
+		// Draw the barrel
 		sha.setActive(true);
-		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix());
-		mesh.setActive(true);
-		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+		sha.setUniformAttribute("model_matrix", barrel_transform.getCachedGlobalMatrix());
+		barrel_mesh.setActive(true, true);
+		glDrawArrays(GL_TRIANGLES, 0, barrel_mesh.getVertexCount());
 
-		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix() * node2.getCachedGlobalMatrix());
-		mesh.setActive(true);
-		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
-
-		sha.setUniformAttribute("model_matrix", node.getCachedGlobalMatrix() * node3.getCachedGlobalMatrix());
-		mesh.setActive(true);
-		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
-
-		sha.setUniformAttribute("model_matrix", node4.getCachedGlobalMatrix());
-		mesh.setActive(true);
-		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
-
-		sha.setUniformAttribute("model_matrix", node5.getCachedGlobalMatrix());
-		mesh.setActive(true);
-		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
-
+		// Draw the launch ramp:
 		sha2.setActive(true);
-		sha2.setUniformAttribute("model_matrix", node6.getCachedGlobalMatrix());
-		stage.setActive(true);
-		glDrawArrays(GL_TRIANGLES, 0, stage.getVertexCount());
+		sha2.setUniformAttribute("model_matrix", launch_ramp_transform.getCachedGlobalMatrix());
+		launch_ramp_mesh.setActive(true, true);
+		glDrawArrays(GL_TRIANGLES, 0, launch_ramp_mesh.getVertexCount());
 
 		// Swap window buffers:
 		game_window->display();
 	}
 
-	mesh.unLoad();
+	barrel_mesh.unLoad();
 	tex.unLoad();
 	sha.unLoad();
 
