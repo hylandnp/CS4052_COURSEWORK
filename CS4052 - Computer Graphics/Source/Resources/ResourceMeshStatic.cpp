@@ -13,12 +13,16 @@ Loading code adapted from ASSIMP examples given.
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 #include <cstdlib>
+#include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/btBulletCollisionCommon.h>
 
 
 ResourceMeshStatic::ResourceMeshStatic() :
 	m_vertex_count(0),
 	m_vao_handle(0),
-	m_vbo_handle(0)
+	m_vbo_handle(0),
+	m_physics_triangle_mesh(nullptr),
+	m_collision_mesh(nullptr)
 {
 	// Default initialisation...
 	ResourceBase::ResourceBase(ResourceType::MESH_STATIC);
@@ -55,6 +59,10 @@ bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src)
 	float* attributes = new float[sizeof(float) * 8 * m_vertex_count]; // temporary vertex data
 	GLuint count = 0; // increment by 8 for each new vertex point
 
+	// Create physics shape/mesh:
+	m_physics_triangle_mesh = new btTriangleMesh();
+	btVector3 triangles[3];
+
 	for (std::size_t i = 0; i < import_mesh->mNumFaces; i++)
 	{
 		auto& import_face = import_mesh->mFaces[i];
@@ -81,8 +89,21 @@ bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src)
 			attributes[count + 7] = import_uvs.y;
 
 			count += 8;
+
+			// Store physics triangles:
+			triangles[j] = btVector3(import_vertex.x,
+									 import_vertex.y,
+									 import_vertex.z);
 		}
+
+		// Add triangle to physics shape/mesh:
+		m_physics_triangle_mesh->addTriangle(triangles[0],
+											 triangles[1],
+											 triangles[2], true);
 	}
+
+	// Create collision object:
+	m_collision_mesh = new btBvhTriangleMeshShape(m_physics_triangle_mesh, true);
 
 	// Create vertex array object:
 	glGenVertexArrays(1, &m_vao_handle);
@@ -127,6 +148,9 @@ void ResourceMeshStatic::unLoad()
 	m_vao_handle = 0;
 	m_vbo_handle = 0;
 
+	if (m_collision_mesh) delete m_collision_mesh;
+	if (m_physics_triangle_mesh) delete m_physics_triangle_mesh;
+
 	ResourceBase::unLoad();
 }
 
@@ -154,4 +178,16 @@ unsigned int ResourceMeshStatic::getVertexArrayHandle()
 unsigned int ResourceMeshStatic::getVertexBufferHandle()
 {
 	return m_vbo_handle;
+}
+
+
+btTriangleMesh* ResourceMeshStatic::getPhysicsMeshObject()
+{
+	return m_physics_triangle_mesh;
+}
+
+
+btBvhTriangleMeshShape* ResourceMeshStatic::getCollisionMeshObject()
+{
+	return m_collision_mesh;
 }

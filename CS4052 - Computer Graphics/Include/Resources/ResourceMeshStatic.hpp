@@ -8,6 +8,10 @@ NEIL HYLAND (11511677)
 #include <string>
 
 
+// Forward declaration(s):
+class btBvhTriangleMeshShape;
+class btTriangleMesh;
+
 /*
 Simple mesh class.
 This class represents a 'static' (i.e. non-animated) OpenGL mesh object.
@@ -36,8 +40,14 @@ public:
 	std::size_t getVertexCount();
 	unsigned int getVertexArrayHandle();
 	unsigned int getVertexBufferHandle();
+	btTriangleMesh* getPhysicsMeshObject();
+	btBvhTriangleMeshShape* getCollisionMeshObject();
 private:
 	std::size_t m_vertex_count;
 	unsigned int m_vao_handle,
 				 m_vbo_handle;
+
+	// Physics collision mesh shape:
+	btTriangleMesh* m_physics_triangle_mesh;
+	btBvhTriangleMeshShape* m_collision_mesh;
 };

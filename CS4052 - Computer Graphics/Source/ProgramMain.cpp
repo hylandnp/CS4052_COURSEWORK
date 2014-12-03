@@ -5,6 +5,8 @@ NEIL HYLAND (11511677)
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstdlib>
+#include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/btBulletCollisionCommon.h>
 
 #if defined(_DEBUG) || !defined(NDEBUG)
 	#include <iostream>
@@ -50,6 +52,17 @@ NEIL HYLAND (11511677)
 	game_window->setActive(true);
 	game_window->setVsync(true);
 
+	// Setup physics:
+	auto bullet_broadphase = new btDbvtBroadphase();
+	auto bullet_collision_config = new btDefaultCollisionConfiguration();
+	auto bullet_collision_dispatcher = new btCollisionDispatcher(bullet_collision_config);
+	auto bullet_solver = new btSequentialImpulseConstraintSolver();
+	auto bullet_dynamics_world = new btDiscreteDynamicsWorld(bullet_collision_dispatcher,
+															 bullet_broadphase,
+															 bullet_solver,
+															 bullet_collision_config);
+	bullet_dynamics_world->setGravity(btVector3(0.f, -10.f, 0.f));
+
 	// Load/setup game resources:
 	ResourceTexture2D tex;
 	tex.loadFromFile("Assets/barrel.jpg", true);
@@ -86,6 +99,11 @@ NEIL HYLAND (11511677)
 		   last_frame_time = this_frame_time,
 		   delta_time = 0.0;
 
+	// Setup physics scene:
+	auto barrel_rigid_body = new btRigidBody(1.f,
+											 nullptr,
+											 barrel_mesh.getCollisionMeshObject());
+
 	// Enter main loop:
 	game_window->setVisible(true);
 	while (game_window->isOpen())
@@ -95,6 +113,9 @@ NEIL HYLAND (11511677)
 		last_frame_time = this_frame_time;
 
 		if (!game_window->clear()) return EXIT_FAILURE;
+
+		// Update physics step:
+		bullet_dynamics_world->stepSimulation(static_cast<float>(delta_time));
 
 		// Check for keyboard input:
 		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_W) == GLFW_PRESS ||
@@ -108,16 +129,16 @@ NEIL HYLAND (11511677)
 			camera.rotateByX(-30.f * static_cast<float>(delta_time));
 		}
 
-		if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_PRESS ||
-			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_REPEAT)
-		{
-			camera.rotateByY(30.f * static_cast<float>(delta_time));
-		}
-		else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_PRESS ||
-			glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_REPEAT)
-		{
-			camera.rotateByY(-30.f * static_cast<float>(delta_time));
-		}
+		//if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_PRESS ||
+		//	glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_A) == GLFW_REPEAT)
+		//{
+		//	camera.rotateByY(30.f * static_cast<float>(delta_time));
+		//}
+		//else if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_PRESS ||
+		//	glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_D) == GLFW_REPEAT)
+		//{
+		//	camera.rotateByY(-30.f * static_cast<float>(delta_time));
+		//}
 
 		auto move_amount = 5.f * static_cast<float>(delta_time);
 
@@ -191,6 +212,13 @@ NEIL HYLAND (11511677)
 	game_window->close();
 	delete game_window;
 	Window::deInitGLFW();
+
+	// Close physics:
+	delete bullet_dynamics_world;
+	delete bullet_solver;
+	delete bullet_collision_dispatcher;
+	delete bullet_collision_config;
+	delete bullet_broadphase;
 
 	#if defined(_DEBUG) || !defined(NDEBUG)
 		std::cout << "Press ENTER to exit program...\n";
