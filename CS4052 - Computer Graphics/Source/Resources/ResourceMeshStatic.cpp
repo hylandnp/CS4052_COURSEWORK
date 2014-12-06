@@ -22,14 +22,15 @@ ResourceMeshStatic::ResourceMeshStatic() :
 	m_vao_handle(0),
 	m_vbo_handle(0),
 	m_physics_triangle_mesh(nullptr),
-	m_collision_mesh(nullptr)
+	m_collision_mesh(nullptr),
+	m_static_physics_object(true)
 {
 	// Default initialisation...
 	ResourceBase::ResourceBase(ResourceType::MESH_STATIC);
 }
 
 
-bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src)
+bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src, bool p_static_physics)
 {
 	this->unLoad(); // dispose of previous instance
 
@@ -103,7 +104,16 @@ bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src)
 	}
 
 	// Create collision object:
-	m_collision_mesh = new btConvexTriangleMeshShape(m_physics_triangle_mesh, true);
+	m_static_physics_object = p_static_physics;
+
+	if (m_static_physics_object)
+	{
+		m_collision_mesh = new btBvhTriangleMeshShape(m_physics_triangle_mesh, true, true);
+	}
+	else
+	{
+		m_collision_mesh = new btConvexTriangleMeshShape(m_physics_triangle_mesh, true);
+	}
 
 	// Create vertex array object:
 	glGenVertexArrays(1, &m_vao_handle);
@@ -187,7 +197,13 @@ btTriangleMesh* ResourceMeshStatic::getPhysicsMeshObject()
 }
 
 
-btConvexTriangleMeshShape* ResourceMeshStatic::getCollisionMeshObject()
+btCollisionShape* ResourceMeshStatic::getCollisionMeshObject()
 {
 	return m_collision_mesh;
+}
+
+
+bool ResourceMeshStatic::isStaticPhysicsObject()
+{
+	return m_static_physics_object;
 }

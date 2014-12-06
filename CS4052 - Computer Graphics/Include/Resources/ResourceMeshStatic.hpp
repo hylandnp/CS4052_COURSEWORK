@@ -9,7 +9,7 @@ NEIL HYLAND (11511677)
 
 
 // Forward declaration(s):
-class btConvexTriangleMeshShape;
+class btCollisionShape;
 class btTriangleMesh;
 
 /*
@@ -28,7 +28,7 @@ public:
 	ResourceMeshStatic();
 
 	// Load function(s):
-	bool loadFromFile(const std::string& p_file_src);
+	bool loadFromFile(const std::string& p_file_src, bool p_static_physics = true);
 
 	// Inherited disposal function:
 	void unLoad();
@@ -41,7 +41,8 @@ public:
 	unsigned int getVertexArrayHandle();
 	unsigned int getVertexBufferHandle();
 	btTriangleMesh* getPhysicsMeshObject();
-	btConvexTriangleMeshShape* getCollisionMeshObject();
+	btCollisionShape* getCollisionMeshObject();
+	bool isStaticPhysicsObject();
 private:
 	std::size_t m_vertex_count;
 	unsigned int m_vao_handle,
@@ -49,5 +50,6 @@ private:
 
 	// Physics collision mesh shape:
 	btTriangleMesh* m_physics_triangle_mesh;
-	btConvexTriangleMeshShape* m_collision_mesh;
+	btCollisionShape* m_collision_mesh;
+	bool m_static_physics_object;
 };

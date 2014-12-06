@@ -77,8 +77,8 @@ NEIL HYLAND (11511677)
 
 	ResourceMeshStatic barrel_mesh,
 					   launch_ramp_mesh;
-	barrel_mesh.loadFromFile("Assets/barrel2.obj");
-	launch_ramp_mesh.loadFromFile("Assets/launch_ramp.obj");
+	barrel_mesh.loadFromFile("Assets/barrel2.obj", false);
+	launch_ramp_mesh.loadFromFile("Assets/launch_ramp.obj", true);
 
 	sha.setActive(true);
 	barrel_mesh.setActive(true, true);
@@ -115,13 +115,13 @@ NEIL HYLAND (11511677)
 	bullet_dynamics_world->addRigidBody(ground_rigid_body);
 
 	// Setup ramp collision body:
-	btVector3 launch_ramp_local_inertia;
-	launch_ramp_mesh.getCollisionMeshObject()->calculateLocalInertia(0, launch_ramp_local_inertia);
+	//btVector3 launch_ramp_local_inertia;
+	//launch_ramp_mesh.getCollisionMeshObject()->calculateLocalInertia(0, launch_ramp_local_inertia);
 
 	auto launch_ramp_rigid_body = new btRigidBody(0,
 												  ramp_motion_state,
 												  launch_ramp_mesh.getCollisionMeshObject(),
-												  launch_ramp_local_inertia);
+												  btVector3(0, 0, 0));
 	bullet_dynamics_world->addRigidBody(launch_ramp_rigid_body);
 
 	// Setup barrel rigid/collision body:
