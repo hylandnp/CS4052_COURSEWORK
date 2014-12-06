@@ -85,11 +85,11 @@ NEIL HYLAND (11511677)
 
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
-	camera.setPosition(0.f, 1.5f, 4.f);
+	camera.setPosition(0.f, 2.5f, 4.f);
 	//camera.setRotationX(-45.f);
 
 	SceneNodeTransform barrel_transform("TestTransform", nullptr);
-	barrel_transform.setPosition(0.f, 0.9f, 1.4f);
+	barrel_transform.setPosition(0.f, 1.5f, 1.4f); // y = 0.9f
 
 	SceneNodeTransform launch_ramp_transform("TestChildTransform1", nullptr);
 	launch_ramp_transform.setPosition(0.f, 0.f, 0.f);
@@ -99,10 +99,45 @@ NEIL HYLAND (11511677)
 		   last_frame_time = this_frame_time,
 		   delta_time = 0.0;
 
-	// Setup physics scene:
-	auto barrel_rigid_body = new btRigidBody(1.f,
-											 nullptr,
-											 barrel_mesh.getCollisionMeshObject());
+	// Setup physics objects:
+	auto ground_shape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+
+	// Setup physics scene motion states:
+	auto ground_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+	auto fall_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 3, 1)));
+	auto ramp_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
+
+	// Setup ground collision plane:
+	auto ground_rigid_body = new btRigidBody(0,
+											 ground_motion_state,
+											 ground_shape,
+											 btVector3(0, 0, 0));
+	bullet_dynamics_world->addRigidBody(ground_rigid_body);
+
+	// Setup ramp collision body:
+	btVector3 launch_ramp_local_inertia;
+	launch_ramp_mesh.getCollisionMeshObject()->calculateLocalInertia(0, launch_ramp_local_inertia);
+
+	auto launch_ramp_rigid_body = new btRigidBody(0,
+												  ramp_motion_state,
+												  launch_ramp_mesh.getCollisionMeshObject(),
+												  launch_ramp_local_inertia);
+	bullet_dynamics_world->addRigidBody(launch_ramp_rigid_body);
+
+	// Setup barrel rigid/collision body:
+	btScalar barrel_mass = 10;
+	btVector3 barrel_local_inertia;
+	barrel_mesh.getCollisionMeshObject()->calculateLocalInertia(barrel_mass, barrel_local_inertia);
+
+	auto barrel_rigid_body = new btRigidBody(barrel_mass,
+											 fall_motion_state,
+											 barrel_mesh.getCollisionMeshObject(),
+											 barrel_local_inertia);
+	barrel_rigid_body->setRestitution(1);
+	bullet_dynamics_world->addRigidBody(barrel_rigid_body);
+
+	// Glue transformation matrix between OpenGL/GLM and Bullet:
+	glm::mat4 ATTRIBUTE_ALIGNED16(aligned_model_matrix);
 
 	// Enter main loop:
 	game_window->setVisible(true);
@@ -179,20 +214,28 @@ NEIL HYLAND (11511677)
 		sha.setActive(true);
 		sha.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
 		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
+		sha.setUniformAttribute("light_position_world", camera.getPosition() + glm::vec3(0.f, 4.f, 0.f));
 
 		sha2.setActive(true);
 		sha2.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
 		sha2.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
+		sha2.setUniformAttribute("light_position_world", camera.getPosition() + glm::vec3(0.f, 4.f, 0.f));
 
-		// Draw the barrel
+		// Update the barrel transform:
+		barrel_rigid_body->getWorldTransform().getOpenGLMatrix(glm::value_ptr(aligned_model_matrix));
+
+		// Draw the barrel:
 		sha.setActive(true);
-		sha.setUniformAttribute("model_matrix", barrel_transform.getCachedGlobalMatrix());
+		sha.setUniformAttribute("model_matrix", aligned_model_matrix); // barrel_transform.getCachedGlobalMatrix());
 		barrel_mesh.setActive(true, true);
 		glDrawArrays(GL_TRIANGLES, 0, barrel_mesh.getVertexCount());
 
+		// Update the ramp transform:
+		launch_ramp_rigid_body->getWorldTransform().getOpenGLMatrix(glm::value_ptr(aligned_model_matrix));
+
 		// Draw the launch ramp:
 		sha2.setActive(true);
-		sha2.setUniformAttribute("model_matrix", launch_ramp_transform.getCachedGlobalMatrix());
+		sha2.setUniformAttribute("model_matrix", aligned_model_matrix);
 		launch_ramp_mesh.setActive(true, true);
 		glDrawArrays(GL_TRIANGLES, 0, launch_ramp_mesh.getVertexCount());
 

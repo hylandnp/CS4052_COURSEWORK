@@ -103,7 +103,7 @@ bool ResourceMeshStatic::loadFromFile(const std::string& p_file_src)
 	}
 
 	// Create collision object:
-	m_collision_mesh = new btBvhTriangleMeshShape(m_physics_triangle_mesh, true);
+	m_collision_mesh = new btConvexTriangleMeshShape(m_physics_triangle_mesh, true);
 
 	// Create vertex array object:
 	glGenVertexArrays(1, &m_vao_handle);
@@ -187,7 +187,7 @@ btTriangleMesh* ResourceMeshStatic::getPhysicsMeshObject()
 }
 
 
-btBvhTriangleMeshShape* ResourceMeshStatic::getCollisionMeshObject()
+btConvexTriangleMeshShape* ResourceMeshStatic::getCollisionMeshObject()
 {
 	return m_collision_mesh;
 }

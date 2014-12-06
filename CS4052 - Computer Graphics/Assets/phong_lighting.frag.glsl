@@ -22,10 +22,10 @@ uniform mat4 model_matrix,
 			 view_matrix,
 			 proj_matrix;
 uniform sampler2D texture_sampler;
+uniform vec3 light_position_world;
 
 
 // Fixed point light test:
-vec3 light_position_world = vec3 (0.0, 3.0, 0.0);
 vec3 light_specular_colour = vec3 (1.0, 1.0, 1.0); // white specular colour
 vec3 light_diffuse_colour = vec3 (0.7, 0.7, 0.7); // dull white diffuse light colour
 vec3 light_ambient_colour = vec3 (0.2, 0.2, 0.2); // grey ambient colour

@@ -9,7 +9,7 @@ NEIL HYLAND (11511677)
 
 
 // Forward declaration(s):
-class btBvhTriangleMeshShape;
+class btConvexTriangleMeshShape;
 class btTriangleMesh;
 
 /*
@@ -41,7 +41,7 @@ public:
 	unsigned int getVertexArrayHandle();
 	unsigned int getVertexBufferHandle();
 	btTriangleMesh* getPhysicsMeshObject();
-	btBvhTriangleMeshShape* getCollisionMeshObject();
+	btConvexTriangleMeshShape* getCollisionMeshObject();
 private:
 	std::size_t m_vertex_count;
 	unsigned int m_vao_handle,
@@ -49,5 +49,5 @@ private:
 
 	// Physics collision mesh shape:
 	btTriangleMesh* m_physics_triangle_mesh;
-	btBvhTriangleMeshShape* m_collision_mesh;
+	btConvexTriangleMeshShape* m_collision_mesh;
 };
