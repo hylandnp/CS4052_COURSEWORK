@@ -115,9 +115,6 @@ NEIL HYLAND (11511677)
 	bullet_dynamics_world->addRigidBody(ground_rigid_body);
 
 	// Setup ramp collision body:
-	//btVector3 launch_ramp_local_inertia;
-	//launch_ramp_mesh.getCollisionMeshObject()->calculateLocalInertia(0, launch_ramp_local_inertia);
-
 	auto launch_ramp_rigid_body = new btRigidBody(0,
 												  ramp_motion_state,
 												  launch_ramp_mesh.getCollisionMeshObject(),
