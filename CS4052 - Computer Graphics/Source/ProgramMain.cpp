@@ -27,8 +27,7 @@ NEIL HYLAND (11511677)
 
 #define GAME_MENU 1
 #define GAME_PLAY 2
-#define GAME_WIN 3
-#define GAME_LOSE 4
+#define GAME_OVER 3
 
 
 
@@ -202,7 +201,8 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 	// Setup launch parameters:
 	btVector3 relative_force(0, 0, 1000),
-			  corrected_force(0, 0, 0);
+			  corrected_force(0, 0, 0),
+			  zero_vector(0.f, 0.f, 0.f);
 	btTransform launch_trans;
 	bool is_launched = false;
 
@@ -213,6 +213,8 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 	// Game states:
 	char current_game_state = GAME_PLAY;
+	int remaining_lives = 3,
+		score = 0;
 
 	// Enter main loop:
 	game_window->setVisible(true);
@@ -242,8 +244,15 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 			if (collision_callback.has_hit)
 			{
-				// Has hit the wall, score 1 point and reset barrel pos:
-				std::cout << "Hit wall, score!\n";
+				// Has hit the wall, score 1 point and reset barrel position:
+				score++;
+				std::cout << "Hit wall, score: " << score << "!\n";
+				is_launched = false;
+
+				barrel_rigid_body->clearForces();
+				barrel_rigid_body->setLinearVelocity(zero_vector);
+				barrel_rigid_body->setAngularVelocity(zero_vector);
+				barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
 			}
 			else
 			{
@@ -251,8 +260,16 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 				if (collision_callback.has_hit)
 				{
-					// Has hit the wall, lose 1 barrel and reset barrel pos:
+					// Has hit the wall, lose 1 barrel and reset barrel position:
 					std::cout << "Hit ground, boo!\n";
+
+					remaining_lives--;
+					if (remaining_lives <= 0) current_game_state = GAME_OVER;
+
+					//barrel_rigid_body->clearForces();
+					//barrel_rigid_body->setLinearVelocity(zero_vector);
+					//barrel_rigid_body->setAngularVelocity(zero_vector);
+					//barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
 				}
 			}
 
