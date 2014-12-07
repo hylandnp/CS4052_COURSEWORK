@@ -56,7 +56,7 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	btRigidBody* barrel_ptr;
 	btRigidBody* target_ptr;
 
-	bool has_hit;
+	bool has_hit = false;
 };
 
 
@@ -113,13 +113,37 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 	ResourceMeshStatic barrel_mesh,
 					   launch_ramp_mesh,
-					   wall_mesh;
+					   wall_mesh,
+					   cog_mesh;
 	barrel_mesh.loadFromFile("Assets/barrel2.obj", false);
 	launch_ramp_mesh.loadFromFile("Assets/launch_ramp.obj", true);
 	wall_mesh.loadFromFile("Assets/fish_wall.obj", true);
+	cog_mesh.loadFromFile("Assets/cog.obj", true);
 
 	sha.setActive(true);
 	barrel_mesh.setActive(true, true);
+
+	// Animated cog transforms:
+	SceneNodeTransform cog1,
+					   cog2,
+					   cog3,
+					   cog4,
+					   cog5,
+					   cog6;
+	cog1.setPosition(-1.3f, 2.1f, 0.f);
+	cog2.setPosition(1.3f, 2.1f, 0.f);
+
+	cog3.setPosition(-0.3f, 0.6f, 0.f);
+	cog4.setPosition(0.3f, -0.6f, 0.f);
+	cog3.setScale(0.3f);
+	cog4.setScale(0.3f);
+
+	cog5.setPosition(-1.2f, 1.4f, 1.7f);
+	cog6.setPosition(1.2f, 1.4f, 1.7f);
+	cog5.setScale(0.5f);
+	cog6.setScale(0.5f);
+
+	float cog_rotation = 20.f;
 
 	SceneNodeCamera camera("Camera");
 	camera.setPerspective(45.f, game_window->getWidth(), game_window->getHeight());
@@ -185,7 +209,6 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	// Setup callback:
 	WallBarrelCollisionResultCallback collision_callback;
 	collision_callback.barrel_ptr = barrel_rigid_body;
-	//collision_callback.ground_ptr = ground_rigid_body;
 	collision_callback.target_ptr = wall_rigid_body;
 
 	// Game states:
@@ -203,6 +226,14 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 		if (current_game_state == GAME_PLAY)
 		{
+			// Update cog rotations:
+			cog1.rotateByX(cog_rotation * static_cast<float>(delta_time));
+			cog2.rotateByX(cog_rotation * static_cast<float>(delta_time));
+			cog3.rotateByX(-cog_rotation * 2 * static_cast<float>(delta_time));
+			cog4.rotateByX(-cog_rotation * 2 * static_cast<float>(delta_time));
+			cog5.rotateByX(-cog_rotation * static_cast<float>(delta_time));
+			cog6.rotateByX(-cog_rotation * static_cast<float>(delta_time));
+
 			// Update physics step:
 			bullet_dynamics_world->stepSimulation(static_cast<float>(delta_time));
 
@@ -334,6 +365,37 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 			sha2.setUniformAttribute("model_matrix", aligned_model_matrix);
 			launch_ramp_mesh.setActive(true, true);
 			glDrawArrays(GL_TRIANGLES, 0, launch_ramp_mesh.getVertexCount());
+
+			// Draw the animated cogs on ramp sides:
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", cog1.getCachedGlobalMatrix());
+			cog_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, cog_mesh.getVertexCount());
+
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", cog2.getCachedGlobalMatrix());
+			cog_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, cog_mesh.getVertexCount());
+
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", cog1.getCachedGlobalMatrix() * cog3.getCachedGlobalMatrix());
+			cog_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, cog_mesh.getVertexCount());
+
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", cog2.getCachedGlobalMatrix() * cog4.getCachedGlobalMatrix());
+			cog_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, cog_mesh.getVertexCount());
+
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", cog5.getCachedGlobalMatrix());
+			cog_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, cog_mesh.getVertexCount());
+
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", cog6.getCachedGlobalMatrix());
+			cog_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, cog_mesh.getVertexCount());
 
 			// Update the wall transform:
 			wall_rigid_body->getWorldTransform().getOpenGLMatrix(glm::value_ptr(aligned_model_matrix));
