@@ -115,8 +115,10 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	bullet_dynamics_world->setGravity(btVector3(0.f, -10.f, 0.f));
 
 	// Load/setup game resources:
-	ResourceTexture2D tex;
+	ResourceTexture2D tex,
+					  tex2;
 	tex.loadFromFile("Assets/barrel.jpg", true);
+	tex2.loadFromFile("Assets/fish_wall.png", true);
 
 	ResourceShader sha,
 				   sha2;
@@ -129,11 +131,13 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	ResourceMeshStatic barrel_mesh,
 					   launch_ramp_mesh,
 					   wall_mesh,
-					   cog_mesh;
+					   cog_mesh,
+					   pole_mesh;
 	barrel_mesh.loadFromFile("Assets/barrel2.obj", false);
 	launch_ramp_mesh.loadFromFile("Assets/launch_ramp.obj", true);
-	wall_mesh.loadFromFile("Assets/fish_wall.obj", true);
+	wall_mesh.loadFromFile("Assets/fish_wall2.obj", true);
 	cog_mesh.loadFromFile("Assets/cog.obj", true);
+	pole_mesh.loadFromFile("Assets/pole.obj", true);
 
 	sha.setActive(true);
 	barrel_mesh.setActive(true, true);
@@ -188,6 +192,7 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	auto fall_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
 	auto ramp_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, 0)));
 	auto wall_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, -35)));
+	auto pole_motion_state = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 1, -20)));
 
 	// Setup ground collision plane:
 	auto ground_rigid_body = new btRigidBody(0,
@@ -209,6 +214,13 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 										   wall_mesh.getCollisionMeshObject(),
 										   btVector3(0, 0, 0));
 	bullet_dynamics_world->addRigidBody(wall_rigid_body);
+
+	// Setup pole collision body:
+	auto pole_rigid_body = new btRigidBody(0,
+										   pole_motion_state,
+										   pole_mesh.getCollisionMeshObject(),
+										   btVector3(0, 0, 0));
+	bullet_dynamics_world->addRigidBody(pole_rigid_body);
 
 	// Setup barrel rigid/collision body:
 	btScalar barrel_mass = 10;
@@ -236,6 +248,9 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	WallBarrelCollisionResultCallback collision_callback;
 	collision_callback.barrel_ptr = barrel_rigid_body;
 	collision_callback.target_ptr = wall_rigid_body;
+
+	// Setup pole movement:
+	bool pole_move_left = true;
 
 	// Game states:
 	char current_game_state = GAME_MENU;
@@ -390,8 +405,8 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 			if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			{
 				current_game_state = GAME_OVER;
+				camera.setRotation(-5.f, 0.f, 0.f);
 				camera.setPosition(0.f, 3.f, 4.f);
-				camera.setRotationX(-5.f);
 			}
 
 			// Barrel launch:
@@ -426,6 +441,25 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 			sha2.setUniformAttribute("model_matrix", aligned_model_matrix);
 			launch_ramp_mesh.setActive(true, true);
 			glDrawArrays(GL_TRIANGLES, 0, launch_ramp_mesh.getVertexCount());
+
+			// Update the pole transform:
+			auto pole_pos = pole_rigid_body->getCenterOfMassPosition();
+			
+			if ((pole_move_left && pole_pos.getX() > 8) ||
+				(!pole_move_left && pole_pos.getX() < -8))
+			{
+				pole_move_left = !pole_move_left;
+			}
+
+			pole_pos.setX(pole_pos.getX() + ((pole_move_left) ? 5 : -5) * static_cast<float>(delta_time));
+			pole_rigid_body->setCenterOfMassTransform(btTransform(btQuaternion(0, 0, 0, 1), pole_pos));
+			pole_rigid_body->getWorldTransform().getOpenGLMatrix(glm::value_ptr(aligned_model_matrix));
+
+			// Draw pole obstacle:
+			sha2.setActive(true);
+			sha2.setUniformAttribute("model_matrix", aligned_model_matrix);
+			pole_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, pole_mesh.getVertexCount());
 
 			// Draw the animated cogs on ramp sides:
 			sha2.setActive(true);
@@ -462,8 +496,9 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 			wall_rigid_body->getWorldTransform().getOpenGLMatrix(glm::value_ptr(aligned_model_matrix));
 
 			// Draw the wall:
-			sha2.setActive(true);
-			sha2.setUniformAttribute("model_matrix", aligned_model_matrix);
+			sha.setActive(true);
+			tex2.setActive(true);
+			sha.setUniformAttribute("model_matrix", aligned_model_matrix); // barrel_transform.getCachedGlobalMatrix());
 			wall_mesh.setActive(true, true);
 			glDrawArrays(GL_TRIANGLES, 0, wall_mesh.getVertexCount());
 
@@ -503,8 +538,8 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 					barrel_rigid_body->setAngularVelocity(zero_vector);
 					barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
 
+					camera.setRotation(-5.f, 0.f, 0.f);
 					camera.setPosition(0.f, 3.f, 4.f);
-					camera.setRotationX(-5.f);
 					update_text(play_text, "Play Again");
 					update_text(over_text, "GAME OVER!");
 				}
