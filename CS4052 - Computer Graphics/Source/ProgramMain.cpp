@@ -5,6 +5,9 @@ NEIL HYLAND (11511677)
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstdlib>
+#include <string>
+#include <sstream>
+
 #include <bullet/btBulletDynamicsCommon.h>
 #include <bullet/btBulletCollisionCommon.h>
 
@@ -24,6 +27,8 @@ NEIL HYLAND (11511677)
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+
+#include "text.h"
 
 #define GAME_MENU 1
 #define GAME_PLAY 2
@@ -87,6 +92,17 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	game_window->setActive(true);
 	game_window->setVsync(true);
 
+	// Init text rendering:
+	init_text_rendering("Assets/freemono.png",
+						"Assets/freemono.meta",
+						game_window->getWidth(),
+						game_window->getHeight());
+	int score_text = add_text("Current Score: ", -0.95f, 1.f, 60, 1.f, 1.f, 1.f, 1.f),
+		barrel_text = add_text("Barrels Remaining: ", -0.95f, 0.9f, 60, 1.f, 1.f, 1.f, 1.f),
+		play_text = add_text("Play Game", 0.f, 0.3f, 90, 1.f, 1.f, 1.f, 1.f),
+		quit_text = add_text("Quit Game", 0.f, -0.1f, 90, 1.f, 1.f, 1.f, 1.f),
+		over_text = add_text("SHOOTING FISH WITH A BARREL", -0.8f, 0.5f, 90, 1.f, 1.f, 1.f, 1.f);
+
 	// Setup physics:
 	auto bullet_broadphase = new btDbvtBroadphase();
 	auto bullet_collision_config = new btDefaultCollisionConfiguration();
@@ -121,6 +137,16 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 	sha.setActive(true);
 	barrel_mesh.setActive(true, true);
+
+	SceneNodeTransform barrel_icon_trans;
+	barrel_icon_trans.setScale(0.5f);
+	float barrel_rotation_val = 30.f;
+	bool play_hover = true;
+
+	glm::vec3 play_pos(-0.5f, 2.9f, -2.f),
+			  quit_pos(-0.5f, 1.9f, -2.f);
+
+	barrel_icon_trans.setPosition(play_pos);
 
 	// Animated cog transforms:
 	SceneNodeTransform cog1,
@@ -212,9 +238,15 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 	collision_callback.target_ptr = wall_rigid_body;
 
 	// Game states:
-	char current_game_state = GAME_PLAY;
+	char current_game_state = GAME_MENU;
 	int remaining_lives = 3,
 		score = 0;
+	std::stringstream str_stream;
+
+	float input_timeout = 0.4f,
+		  input_last_time = 0.f,
+		  collision_last_time = 0.f,
+		  launch_timeout = 1.f;
 
 	// Enter main loop:
 	game_window->setVisible(true);
@@ -225,6 +257,17 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 		last_frame_time = this_frame_time;
 
 		if (!game_window->clear()) return EXIT_FAILURE;
+
+		// Pass camera matrices to shader(s):
+		sha.setActive(true);
+		sha.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
+		sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
+		sha.setUniformAttribute("light_position_world", camera.getPosition() + glm::vec3(0.f, 4.f, 0.f));
+
+		sha2.setActive(true);
+		sha2.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
+		sha2.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
+		sha2.setUniformAttribute("light_position_world", camera.getPosition() + glm::vec3(0.f, 4.f, 0.f));
 
 		if (current_game_state == GAME_PLAY)
 		{
@@ -253,6 +296,8 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 				barrel_rigid_body->setLinearVelocity(zero_vector);
 				barrel_rigid_body->setAngularVelocity(zero_vector);
 				barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
+
+				collision_last_time = static_cast<float>(glfwGetTime());
 			}
 			else
 			{
@@ -262,14 +307,23 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 				{
 					// Has hit the wall, lose 1 barrel and reset barrel position:
 					std::cout << "Hit ground, boo!\n";
+					is_launched = false;
 
 					remaining_lives--;
-					if (remaining_lives <= 0) current_game_state = GAME_OVER;
+					if (remaining_lives <= 0)
+					{
+						current_game_state = GAME_OVER;
 
-					//barrel_rigid_body->clearForces();
-					//barrel_rigid_body->setLinearVelocity(zero_vector);
-					//barrel_rigid_body->setAngularVelocity(zero_vector);
-					//barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
+						camera.setPosition(0.f, 3.f, 4.f);
+						camera.setRotationX(-5.f);
+					}
+
+					barrel_rigid_body->clearForces();
+					barrel_rigid_body->setLinearVelocity(zero_vector);
+					barrel_rigid_body->setAngularVelocity(zero_vector);
+					barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
+
+					collision_last_time = static_cast<float>(glfwGetTime());
 				}
 			}
 
@@ -333,43 +387,33 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 				camera.moveByY(-move_amount);
 			}
 
+			if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			{
+				current_game_state = GAME_OVER;
+				camera.setPosition(0.f, 3.f, 4.f);
+				camera.setRotationX(-5.f);
+			}
+
 			// Barrel launch:
 			barrel_rigid_body->getMotionState()->getWorldTransform(launch_trans);
 			corrected_force = (launch_trans * relative_force) - launch_trans.getOrigin();
 
-			if (!is_launched && glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_P) == GLFW_PRESS)
+			if (!is_launched &&
+				(static_cast<float>(glfwGetTime()) - collision_last_time > launch_timeout) &&
+				glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_SPACE) == GLFW_PRESS)
 			{
 				barrel_rigid_body->activate();
 				barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), barrel_rigid_body->getCenterOfMassPosition()));
 				barrel_rigid_body->setLinearVelocity(btVector3(0.f, -50.f, -80.f));
-				//paddle_rigid_body->setAngularVelocity();
-				//paddle_rigid_body->applyCentralForce(corrected_force);
-				//barrel_rigid_body->applyForce(corrected_force, btVector3(0.f, -3.f, -3.f));
 				is_launched = true;
 			}
-
-			// target @ 30
-
-			//std::cout << barrel_rigid_body->getCenterOfMassPosition().getX() << ", ";
-			//std::cout << barrel_rigid_body->getCenterOfMassPosition().getY() << ", ";
-			//std::cout << barrel_rigid_body->getCenterOfMassPosition().getZ() << std::endl;
-
-			// Pass camera matrices to shader(s):
-			sha.setActive(true);
-			sha.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
-			sha.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
-			sha.setUniformAttribute("light_position_world", camera.getPosition() + glm::vec3(0.f, 4.f, 0.f));
-
-			sha2.setActive(true);
-			sha2.setUniformAttribute("view_matrix", glm::inverse(camera.getCachedGlobalMatrix()));
-			sha2.setUniformAttribute("proj_matrix", camera.getPerspectiveProjMatrix());
-			sha2.setUniformAttribute("light_position_world", camera.getPosition() + glm::vec3(0.f, 4.f, 0.f));
 
 			// Update the barrel transform:
 			barrel_rigid_body->getWorldTransform().getOpenGLMatrix(glm::value_ptr(aligned_model_matrix));
 
 			// Draw the barrel:
 			sha.setActive(true);
+			tex.setActive(true);
 			sha.setUniformAttribute("model_matrix", aligned_model_matrix); // barrel_transform.getCachedGlobalMatrix());
 			barrel_mesh.setActive(true, true);
 			glDrawArrays(GL_TRIANGLES, 0, barrel_mesh.getVertexCount());
@@ -422,6 +466,74 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 			sha2.setUniformAttribute("model_matrix", aligned_model_matrix);
 			wall_mesh.setActive(true, true);
 			glDrawArrays(GL_TRIANGLES, 0, wall_mesh.getVertexCount());
+
+			// Render text:
+			str_stream << "Current Score: ";
+			str_stream << score;
+
+			update_text(score_text, str_stream.str().c_str());
+			str_stream.clear();
+			str_stream.str("");
+
+			str_stream << "Remaining Barrels: ";
+			str_stream << remaining_lives;
+
+			update_text(barrel_text, str_stream.str().c_str());
+			str_stream.clear();
+			str_stream.str("");
+
+			draw_text(score_text);
+			draw_text(barrel_text);
+		}
+		else
+		{
+			barrel_icon_trans.rotateByX(-30.f * static_cast<float>(delta_time));
+
+			if (glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_ENTER))
+			{
+				if (play_hover)
+				{
+					current_game_state = GAME_PLAY;
+					score = 0;
+					remaining_lives = 3;
+					is_launched = false;
+
+					barrel_rigid_body->clearForces();
+					barrel_rigid_body->setLinearVelocity(zero_vector);
+					barrel_rigid_body->setAngularVelocity(zero_vector);
+					barrel_rigid_body->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 2.2f, 1)));
+
+					camera.setPosition(0.f, 3.f, 4.f);
+					camera.setRotationX(-5.f);
+					update_text(play_text, "Play Again");
+					update_text(over_text, "GAME OVER!");
+				}
+				else
+				{
+					return EXIT_SUCCESS;
+				}
+			}
+
+			if ((static_cast<float>(glfwGetTime()) - input_last_time > input_timeout) &&
+				(glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_UP) ||
+				glfwGetKey(game_window->getRawWindowHandle(), GLFW_KEY_DOWN)))
+			{
+				play_hover = !play_hover;
+				barrel_icon_trans.setPosition(((play_hover) ? play_pos : quit_pos));
+				input_last_time = static_cast<float>(glfwGetTime());
+			}
+
+			// Render the barrel:
+			sha.setActive(true);
+			tex.setActive(true);
+			sha.setUniformAttribute("model_matrix", barrel_icon_trans.getCachedGlobalMatrix());
+			barrel_mesh.setActive(true, true);
+			glDrawArrays(GL_TRIANGLES, 0, barrel_mesh.getVertexCount());
+
+			// Render game text:
+			draw_text(play_text);
+			draw_text(quit_text);
+			draw_text(over_text);
 		}
 
 		// Swap window buffers:

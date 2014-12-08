@@ -109,6 +109,7 @@
     <ClCompile Include="Source\Scene\SceneNodeBase.cpp" />
     <ClCompile Include="Source\Scene\SceneNodeCamera.cpp" />
     <ClCompile Include="Source\Scene\SceneNodeTransform.cpp" />
+    <ClCompile Include="Source\text.cpp" />
     <ClCompile Include="Source\Utility\Logger.cpp" />
     <ClCompile Include="Source\Utility\OpenGLErrors.cpp" />
     <ClCompile Include="Source\Window.cpp" />
@@ -122,6 +123,8 @@
     <ClInclude Include="Include\Scene\SceneNodeBase.hpp" />
     <ClInclude Include="Include\Scene\SceneNodeCamera.hpp" />
     <ClInclude Include="Include\Scene\SceneNodeTransform.hpp" />
+    <ClInclude Include="Include\stb_image.h" />
+    <ClInclude Include="Include\text.h" />
     <ClInclude Include="Include\Utility\Logger.hpp" />
     <ClInclude Include="Include\Utility\NonCopyable.hpp" />
     <ClInclude Include="Include\Utility\OpenGLErrors.hpp" />
