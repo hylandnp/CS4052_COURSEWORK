@@ -304,7 +304,6 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 			{
 				// Has hit the wall, score 1 point and reset barrel position:
 				score++;
-				std::cout << "Hit wall, score: " << score << "!\n";
 				is_launched = false;
 
 				barrel_rigid_body->clearForces();
@@ -320,8 +319,7 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 
 				if (collision_callback.has_hit)
 				{
-					// Has hit the wall, lose 1 barrel and reset barrel position:
-					std::cout << "Hit ground, boo!\n";
+					// Has hit the ground, lose 1 barrel and reset barrel position:
 					is_launched = false;
 
 					remaining_lives--;
@@ -330,7 +328,7 @@ struct WallBarrelCollisionResultCallback : public btCollisionWorld::ContactResul
 						current_game_state = GAME_OVER;
 
 						camera.setPosition(0.f, 3.f, 4.f);
-						camera.setRotationX(-5.f);
+						camera.setRotation(-5.f, 0.f, 0.f);
 					}
 
 					barrel_rigid_body->clearForces();
